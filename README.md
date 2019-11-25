@@ -1,4 +1,4 @@
-# thecage-booking-frontend-admin
+# TheCage Mobile/Web Booking Application - Frontend (Admin Portal)
 
 ## Project setup
 ```
