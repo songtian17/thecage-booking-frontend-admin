@@ -149,4 +149,7 @@ a {
     border-bottom: none !important;
   }
 }
+#announcement .theme--light.v-tabs-items{
+  background-color: #fafafa;
+}
 </style>

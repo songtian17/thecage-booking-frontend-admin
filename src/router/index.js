@@ -4,7 +4,7 @@ import Signin from '../views/SignIn.vue';
 import Venue from '../views/Venue.vue';
 import AddVenue from '../views/AddVenue.vue';
 import EditVenue from '../views/EditVenue.vue';
-import Home from '../views/Home.vue';
+import Announcement from '../views/Announcement.vue';
 
 Vue.use(VueRouter);
 
@@ -39,12 +39,13 @@ const routes = [
       requiresAuth: true,
     },
   },
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+  {
+    path: '/Announcement',
+    name: 'Announcement',
+    component: Announcement,
+    meta: {
+      requiresAuth: true,
+    },
   },
 ];
 

@@ -12,7 +12,7 @@
             <v-list-item-title>Promotion Code</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link>
+        <v-list-item link to="/Announcement">
           <v-list-item-content>
             <v-list-item-title>Announcement</v-list-item-title>
           </v-list-item-content>
