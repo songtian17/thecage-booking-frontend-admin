@@ -1,9 +1,14 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Signin from '../views/SignIn.vue';
+
 import Venue from '../views/Venue.vue';
 import AddVenue from '../views/AddVenue.vue';
 import EditVenue from '../views/EditVenue.vue';
+
+import AdminAccounts from '../views/AdminAccounts.vue';
+import AddAdmin from '../views/AddAdmin.vue';
+import EditAdmin from '../views/EditAdmin.vue';
 import Announcement from '../views/Announcement.vue';
 
 Vue.use(VueRouter);
@@ -35,6 +40,30 @@ const routes = [
     path: '/EditVenue/:id',
     name: 'EditVenue',
     component: EditVenue,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/AdminAccounts',
+    name: 'AdminAccounts',
+    component: AdminAccounts,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/AddAdmin',
+    name: 'AddAdmin',
+    component: AddAdmin,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/EditAdmin/:id',
+    name: 'EditAdmin',
+    component: EditAdmin,
     meta: {
       requiresAuth: true,
     },
