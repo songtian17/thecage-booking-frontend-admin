@@ -12,6 +12,7 @@ import EditAdmin from '../views/EditAdmin.vue';
 
 import Announcement from '../views/Announcement.vue';
 import TimingDiscount from '../views/EditTimingDiscount.vue';
+import Customers from '../views/Customers.vue';
 
 Vue.use(VueRouter);
 
@@ -82,6 +83,14 @@ const routes = [
     path: '/EditTimingDiscount',
     name: 'EditTimingDiscount',
     component: TimingDiscount,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/Customers',
+    name: 'Customers',
+    component: Customers,
     meta: {
       requiresAuth: true,
     },

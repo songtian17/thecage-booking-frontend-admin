@@ -17,12 +17,12 @@
             <v-list-item-title>Announcement</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link>
+        <v-list-item link to="/Customers">
           <v-list-item-content>
             <v-list-item-title>Customers</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link>
+        <v-list-item link to="/EditTimingDiscount">
           <v-list-item-content>
             <v-list-item-title>Timing Discounts</v-list-item-title>
           </v-list-item-content>
