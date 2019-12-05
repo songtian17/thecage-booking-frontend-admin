@@ -9,7 +9,9 @@ import EditVenue from '../views/EditVenue.vue';
 import AdminAccounts from '../views/AdminAccounts.vue';
 import AddAdmin from '../views/AddAdmin.vue';
 import EditAdmin from '../views/EditAdmin.vue';
+
 import Announcement from '../views/Announcement.vue';
+import TimingDiscount from '../views/EditTimingDiscount.vue';
 
 Vue.use(VueRouter);
 
@@ -72,6 +74,14 @@ const routes = [
     path: '/Announcement',
     name: 'Announcement',
     component: Announcement,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/EditTimingDiscount',
+    name: 'EditTimingDiscount',
+    component: TimingDiscount,
     meta: {
       requiresAuth: true,
     },
