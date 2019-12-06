@@ -2,7 +2,7 @@
   <div id="announcement">
     <div id="editor">
       <div class="page-header">
-        <v-btn icon to="/Venue">
+        <v-btn icon to="/">
           <v-icon small class="mr-2" style="margin-right:0!important">mdi-chevron-left</v-icon>
         </v-btn>
         <span class="text">Announcement</span>
@@ -15,7 +15,7 @@
           <div id="md" class="half-content">
             <h2 class="header">Enter Markdown Text</h2>
             <textarea
-              v-model="top_text"
+              v-model="topText"
               style="height:auto"
               rows="16"
               class="form-control"
@@ -31,7 +31,7 @@
           <div id="md" class="half-content">
             <h2 class="header">Enter Markdown Text</h2>
             <textarea
-              v-model="bot_text"
+              v-model="botText"
               style="height:auto"
               rows="16"
               class="form-control"
@@ -54,8 +54,8 @@ const marked = require('marked');
 export default {
   data() {
     return {
-      top_text: '# Top',
-      bot_text: '# Bottom',
+      topText: '# Top',
+      botText: '# Bottom',
     };
   },
   computed: {
@@ -70,7 +70,7 @@ export default {
         smartLists: true,
         smartypants: false,
       });
-      return marked(this.top_text);
+      return marked(this.topText);
     },
     previewBotText() {
       marked.setOptions({
@@ -83,7 +83,7 @@ export default {
         smartLists: true,
         smartypants: false,
       });
-      return marked(this.bot_text);
+      return marked(this.botText);
     },
   },
 };

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="page-header">
-      <v-btn icon to="/Venue">
+      <v-btn icon to="/">
         <v-icon small class="mr-2" style="margin-right:0!important">mdi-chevron-left</v-icon>
       </v-btn>
       <span class="text">Venue and Field</span>

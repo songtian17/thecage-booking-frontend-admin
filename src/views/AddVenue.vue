@@ -7,10 +7,10 @@
       <span class="text">Add Venue</span>
     </div>
 
-    <v-form ref="form" v-model="isFormValid" class="addvenue" lazy-validation>
+    <v-form ref="form" v-model="isFormValid"   lazy-validation>
       <v-container class="form-right">
         <v-text-field
-          v-model="venuename"
+          v-model="venueName"
           :rules="nameRules"
           label="Venue Name"
           required
@@ -25,7 +25,7 @@
 export default {
   data: () => ({
     isFormValid: false,
-    venuename: '',
+    venueName: '',
     nameRules: [v => !!v || 'Venue Name is required'],
   }),
   methods: {

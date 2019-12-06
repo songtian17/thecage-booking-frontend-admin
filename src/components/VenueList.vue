@@ -1,5 +1,5 @@
 <template>
-  <div class="venue-table">
+  <div class="singleLineTable">
     <v-data-table
       :headers="headers"
       :items="venues"
