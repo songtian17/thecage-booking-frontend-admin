@@ -64,6 +64,7 @@ a {
     font-family: "Monst SemiBold";
     padding-left: 20px;
     font-size: 18px;
+    vertical-align: middle;
   }
 }
 .page-header-nav {
@@ -79,6 +80,7 @@ a {
     font-family: "Monst SemiBold";
     padding-left: 20px;
     font-size: 18px;
+    vertical-align: middle;
   }
 }
 .form-right {
@@ -97,7 +99,7 @@ a {
   }
 }
 
-.venue-table {
+.singleLineTable {
   td {
     padding: 0 !important;
     &:first-child {
@@ -105,7 +107,7 @@ a {
     }
   }
   .v-toolbar--flat {
-    height: 10px !important;
+    height: 17px !important;
   }
   .v-data-table {
     tbody {
@@ -148,6 +150,9 @@ a {
   .v-data-table-header-mobile th {
     border-bottom: none !important;
   }
+}
+#adminList .v-data-table__mobile-row:nth-child(2){
+  width: auto;
 }
 #announcement .theme--light.v-tabs-items{
   background-color: #fafafa;
