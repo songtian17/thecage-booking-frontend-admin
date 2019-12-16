@@ -17,6 +17,7 @@ import TimingDiscount from '../views/EditTimingDiscount.vue';
 import PromoCode from '../views/PromoCode.vue';
 
 import Customers from '../views/Customers.vue';
+import BookingHistory from '../views/BookingHistory.vue';
 
 Vue.use(VueRouter);
 
@@ -119,6 +120,14 @@ const routes = [
     path: '/Customers',
     name: 'Customers',
     component: Customers,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/BookingHistory/:id',
+    name: 'BookingHistory',
+    component: BookingHistory,
     meta: {
       requiresAuth: true,
     },
