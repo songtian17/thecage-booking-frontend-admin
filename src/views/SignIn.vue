@@ -10,7 +10,7 @@
                 <v-spacer />
               </v-toolbar>
               <v-card-text>
-                <v-form ref="form" lazy-validation>
+                <v-form id="loginForm" ref="form" lazy-validation @submit.prevent>
                   <v-text-field
                     v-model="id"
                     label="ID"
@@ -33,7 +33,14 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn color="primary" align-end @click="login()">Sign In</v-btn>
+                <v-btn
+                  color="primary"
+                  align-end
+                  type="submit"
+                  form="loginForm"
+                  @click="login()"
+                  >Sign In</v-btn
+                >
               </v-card-actions>
             </v-card>
           </v-col>
@@ -70,7 +77,7 @@ export default {
       if (this.id !== '' && this.password !== '') {
         const data = { id: this.id, password: this.password };
         this.$axios
-          .post('http://localhost:3000/authentication', data)
+          .post('http://localhost:5000/authentication', data)
           .then((res) => {
             // console.log(res);
             const { token } = res.data;
@@ -80,6 +87,7 @@ export default {
           .catch((err) => {
             localStorage.removeItem('user-token');
             console.log(err);
+            this.showErrorDialog = true;
           });
       } else {
         this.showErrorDialog = true;

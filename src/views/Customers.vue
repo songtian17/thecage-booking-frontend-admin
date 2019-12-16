@@ -18,7 +18,12 @@
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
       </v-card-title>
-      <v-data-table :headers="headers" :items="customers" :search="search"></v-data-table>
+      <v-data-table
+        :headers="headers"
+        :items="customers"
+        :search="search"
+        @click:row="redirectBookHist"
+      ></v-data-table>
     </v-card>
   </div>
 </template>
@@ -32,45 +37,31 @@ export default {
         {
           text: 'ID',
           align: 'left',
-          sortable: false,
-          value: 'Id',
+          sortable: true,
+          value: 'id',
         },
         { text: 'Email', value: 'email' },
-        { text: 'Phone', value: 'phone' },
+        { text: 'Name', value: 'name' },
+        { text: 'Phone', value: 'phone_no' },
       ],
-      customers: [
-        {
-          Id: '001',
-          email: 'gozer@sbcglobal.net',
-          phone: '62565356',
-        },
-        {
-          Id: '002',
-          email: 'william@hotmail.com',
-          phone: '62938320',
-        },
-        {
-          Id: '003',
-          email: 'denton@att.net',
-          phone: '67785003',
-        },
-        {
-          Id: '004',
-          email: 'martink@msn.com',
-          phone: '64373815',
-        },
-        {
-          Id: '005',
-          email: 'boein@gmail.com',
-          phone: '67483995',
-        },
-        {
-          Id: '006',
-          email: 'jaesenj@mac.com',
-          phone: '64733226',
-        },
-      ],
+      customers: [],
     };
+  },
+  methods: {
+    redirectBookHist(row) {
+      this.$router.push(`/BookingHistory/${row.id}`);
+    },
+  },
+  mounted() {
+    this.$axios
+      .get(`${process.env.VUE_APP_BACKEND}customer`)
+      .then((res) => {
+        console.log(res.data);
+        this.customers = res.data;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   },
 };
 </script>

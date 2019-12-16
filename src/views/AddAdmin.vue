@@ -28,14 +28,27 @@ export default {
   data: () => ({
     isFormValid: false,
     adminId: '',
+    password: '',
     nameRules: [v => !!v || 'ID is required'],
     pwdRules: [v => !!v || 'Password is required'],
   }),
   methods: {
     submit() {
       if (this.$refs.form.validate()) {
-        // this.snackbar = true;
-        // TODO: submit form to back end
+        if (this.adminId !== '' && this.password !== '') {
+          const data = {
+            user_id: this.adminId, password: this.password, role: 'admin',
+          };
+          this.$axios
+            .post(`${process.env.VUE_APP_BACKEND}admin`, data)
+            .then((res) => {
+              console.log(res);
+              this.$router.push('AdminAccounts');
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
       }
     },
   },

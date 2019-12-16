@@ -28,7 +28,9 @@ export default {
   data() {
     return {
       isFormValid: false,
-      adminId: this.$route.params.id,
+      id: this.$route.params.id,
+      adminId: '',
+      password: '',
       nameRules: [v => !!v || 'ID is required'],
       pwdRules: [v => !!v || 'Password is required'],
     };
@@ -36,10 +38,30 @@ export default {
   methods: {
     submit() {
       if (this.$refs.form.validate()) {
-        // this.snackbar = true;
-        // TODO: submit form to back end
+        if (this.adminId !== '' && this.password !== '') {
+          const data = { id: this.id, user_id: this.adminId, password: this.password };
+          this.$axios
+            .put(`${process.env.VUE_APP_BACKEND}admin/${this.id}`, data)
+            .then((res) => {
+              console.log(res);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
       }
     },
+  },
+  mounted() {
+    this.$axios
+      .get(`${process.env.VUE_APP_BACKEND}admin/${this.id}`)
+      .then((res) => {
+        this.password = res.data.password;
+        this.adminId = res.data.user_id;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   },
 };
 </script>

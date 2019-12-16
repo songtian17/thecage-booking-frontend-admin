@@ -21,7 +21,7 @@
         <router-link :to="`EditVenue/${item.id}`">
           <v-icon small class="mr-2">mdi-pencil-outline</v-icon>
         </router-link>
-        <v-icon small @click="confirmDeleteDialog = true">mdi-delete</v-icon>
+        <v-icon small @click="getVenueId(item)">mdi-delete</v-icon>
       </template>
 
       <template v-slot:expanded-item="{ item }">
@@ -34,22 +34,32 @@
               </router-link>
             </td>
             <td>
-              <v-icon small @click="confirmDeleteDialog = true">mdi-delete</v-icon>
+              <v-icon small @click="getFieldId(field)">mdi-delete</v-icon>
             </td>
           </div>
         </div>
+        <td></td>
         <td></td>
         <td></td>
       </template>
     </v-data-table>
 
     <confirm
-      :showDialog="confirmDeleteDialog"
+      :showDialog="confirmDeleteVenueDialog"
       @confirm="
-        deleteItem(item);
-        confirmDeleteDialog = false;
+        deleteVenue();
+        confirmDeleteVenueDialog = false;
       "
-      @cancel="confirmDeleteDialog = false"
+      @cancel="confirmDeleteVenueDialog = false"
+    ></confirm>
+
+    <confirm
+      :showDialog="confirmDeleteFieldDialog"
+      @confirm="
+        deleteField();
+        confirmDeleteFieldDialog = false;
+      "
+      @cancel="confirmDeleteFieldDialog = false"
     ></confirm>
   </div>
 </template>
@@ -57,42 +67,13 @@
 <script>
 import Confirm from './ConfirmationModal.vue';
 
-const mockDesserts = [
-  {
-    name: 'Kallang',
-    id: '1',
-    fields: [
-      {
-        name: '5-A-Side',
-        id: 'kallang05',
-      },
-      {
-        name: '7-A-Side',
-        id: 'kallang07',
-      },
-    ],
-  },
-  {
-    name: 'Bukit Timah',
-    id: '2',
-    fields: [
-      {
-        name: '5-A-Side',
-        id: 'timah05',
-      },
-      {
-        name: '7-A-Side',
-        id: 'timah07',
-      },
-    ],
-  },
-];
-
 export default {
   data: () => ({
     expanded: [],
-    confirmDeleteDialog: false,
-    confirmDelete: false,
+    confirmDeleteVenueDialog: false,
+    confirmDeleteFieldDialog: false,
+    deleteVenueId: '',
+    deleteFieldId: '',
     headers: [
       {
         text: '',
@@ -110,26 +91,53 @@ export default {
       { text: '', value: 'data-table-expand', width: '24px' },
     ],
     venues: [],
-    editedIndex: -1,
-    editedItem: {
-      name: '',
-    },
-    defaultItem: {
-      name: '',
-    },
   }),
   components: {
     Confirm,
   },
 
   mounted() {
-    this.venues = mockDesserts;
+    this.$axios
+      .get(`${process.env.VUE_APP_BACKEND}venues`)
+      .then((res) => {
+        console.log(res.data);
+        this.venues = res.data;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   },
 
   methods: {
-    deleteItem(item) {
-      const index = this.venues.indexOf(item);
-      this.venues.splice(index, 1);
+    deleteVenue() {
+      this.$axios
+        .delete(`${process.env.VUE_APP_BACKEND}venue/${this.deleteVenueId}`)
+        .then((res) => {
+          console.log(res);
+          this.$router.go('/venue');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    getVenueId(item) {
+      this.deleteVenueId = item.id;
+      this.confirmDeleteVenueDialog = true;
+    },
+    deleteField() {
+      this.$axios
+        .delete(`${process.env.VUE_APP_BACKEND}field/${this.deleteFieldId}`)
+        .then((res) => {
+          console.log(res);
+          this.$router.go('/venue');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    getFieldId(item) {
+      this.deleteFieldId = item.id;
+      this.confirmDeleteFieldDialog = true;
     },
   },
 };
@@ -144,7 +152,7 @@ export default {
   td {
     vertical-align: middle;
     border-bottom: none !important;
-    height: 35px;
+    height: 40px;
   }
   .expandedItem-icon {
     position: absolute;

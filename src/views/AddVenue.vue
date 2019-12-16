@@ -7,7 +7,7 @@
       <span class="text">Add Venue</span>
     </div>
 
-    <v-form ref="form" v-model="isFormValid"   lazy-validation>
+    <v-form ref="form" v-model="isFormValid" lazy-validation>
       <v-container class="form-right">
         <v-text-field
           v-model="venueName"
@@ -18,10 +18,13 @@
         <v-btn color="primary" class="mr-4" @click="submit">Add </v-btn>
       </v-container>
     </v-form>
+
+
   </div>
 </template>
 
 <script>
+
 export default {
   data: () => ({
     isFormValid: false,
@@ -31,7 +34,18 @@ export default {
   methods: {
     submit() {
       if (this.$refs.form.validate()) {
-        // TODO: submit form to back end
+        if (this.venueName !== '') {
+          const data = { name: this.venueName };
+          this.$axios
+            .post(`${process.env.VUE_APP_BACKEND}venue`, data)
+            .then((res) => {
+              console.log(res);
+              this.$router.push('/Venue');
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
       }
     },
   },

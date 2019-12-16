@@ -25,14 +25,14 @@
         <router-link :to="`EditAdmin/${item.id}`">
           <v-icon small class="mr-2">mdi-pencil-outline</v-icon>
         </router-link>
-        <v-icon small @click="showConfirmationDialog = true">mdi-delete</v-icon>
+        <v-icon small @click="getAdminId(item)">mdi-delete</v-icon>
       </template>
     </v-data-table>
 
     <confirm
       :showDialog="showConfirmationDialog"
       @confirm="
-        deleteItem(item);
+        deleteAdmin();
         showConfirmationDialog = false;
       "
       @cancel="showConfirmationDialog = false"
@@ -43,26 +43,17 @@
 <script>
 import Confirm from '../components/ConfirmationModal.vue';
 
-const mockDesserts = [
-  {
-    name: 'admin1',
-    id: '1',
-  },
-  {
-    name: 'admin2',
-    id: '2',
-  },
-];
 
 export default {
   data: () => ({
     showConfirmationDialog: false,
+    deleteAdminId: '',
     headers: [
       {
         text: '',
         align: 'left',
         sortable: false,
-        value: 'name',
+        value: 'user_id',
         width: '100%',
       },
       {
@@ -79,13 +70,32 @@ export default {
   },
 
   mounted() {
-    this.venues = mockDesserts;
+    this.$axios
+      .get(`${process.env.VUE_APP_BACKEND}admin`)
+      .then((res) => {
+        console.log(res.data);
+        this.venues = res.data;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   },
 
   methods: {
-    deleteItem(item) {
-      const index = this.venues.indexOf(item);
-      this.venues.splice(index, 1);
+    deleteAdmin() {
+      this.$axios
+        .delete(`${process.env.VUE_APP_BACKEND}admin/${this.deleteAdminId}`)
+        .then((res) => {
+          console.log(res);
+          this.$router.go('/AdminAccounts');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    getAdminId(item) {
+      this.deleteAdminId = item.id;
+      this.showConfirmationDialog = true;
     },
   },
 };
