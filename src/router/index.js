@@ -5,6 +5,8 @@ import Signin from '../views/SignIn.vue';
 import Venue from '../views/Venue.vue';
 import AddVenue from '../views/AddVenue.vue';
 import EditVenue from '../views/EditVenue.vue';
+import AddField from '../views/AddField.vue';
+import EditField from '../views/EditField.vue';
 
 import AdminAccounts from '../views/AdminAccounts.vue';
 import AddAdmin from '../views/AddAdmin.vue';
@@ -45,6 +47,22 @@ const routes = [
     path: '/EditVenue/:id',
     name: 'EditVenue',
     component: EditVenue,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/AddField/:id',
+    name: 'AddField',
+    component: AddField,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/EditField/:id',
+    name: 'EditField',
+    component: EditField,
     meta: {
       requiresAuth: true,
     },
