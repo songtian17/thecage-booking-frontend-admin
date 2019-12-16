@@ -12,6 +12,8 @@ import EditAdmin from '../views/EditAdmin.vue';
 
 import Announcement from '../views/Announcement.vue';
 import TimingDiscount from '../views/EditTimingDiscount.vue';
+import PromoCode from '../views/PromoCode.vue';
+
 import Customers from '../views/Customers.vue';
 
 Vue.use(VueRouter);
@@ -75,6 +77,14 @@ const routes = [
     path: '/Announcement',
     name: 'Announcement',
     component: Announcement,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/PromoCode',
+    name: 'PromoCode',
+    component: PromoCode,
     meta: {
       requiresAuth: true,
     },
