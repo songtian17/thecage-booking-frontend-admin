@@ -59,6 +59,7 @@ export default {
     };
   },
   computed: {
+    // return this to backend
     previewTopText() {
       marked.setOptions({
         renderer: new marked.Renderer(),
@@ -84,6 +85,11 @@ export default {
         smartypants: false,
       });
       return marked(this.botText);
+    },
+  },
+  methods: {
+    submit() {
+      return this.previewTopText;
     },
   },
 };

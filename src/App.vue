@@ -150,11 +150,24 @@ a {
   .v-data-table-header-mobile th {
     border-bottom: none !important;
   }
+  .v-data-table__expanded__content td {
+    height: 45px;
+    border-bottom: none !important;
+  }
 }
-#adminList .v-data-table__mobile-row:nth-child(2){
+#editVenue .v-data-table-header-mobile {
+  display: none;
+}
+
+#adminList .v-data-table__mobile-row:nth-child(2) {
   width: auto;
 }
-#announcement .theme--light.v-tabs-items{
+#announcement .theme--light.v-tabs-items {
   background-color: #fafafa;
+}
+
+#bookingHistory .v-list .v-list-item--active {
+  color: black !important;
+  background-color: #d1d1d1;
 }
 </style>
