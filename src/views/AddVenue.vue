@@ -7,7 +7,7 @@
       <span class="text">Add Venue</span>
     </div>
 
-    <v-form ref="form" v-model="isFormValid" lazy-validation>
+    <v-form ref="form" v-model="isFormValid" lazy-validation @submit.prevent>
       <v-container class="form-right">
         <v-text-field
           v-model="venueName"

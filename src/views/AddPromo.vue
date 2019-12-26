@@ -1,0 +1,548 @@
+<template>
+  <div>
+    <div class="page-header-nav">
+      <v-btn icon @click="$router.go(-1)">
+        <v-icon small class="mr-2" style="margin-right:0!important">mdi-chevron-left</v-icon>
+      </v-btn>
+      <span class="text">Add Promotion Code</span>
+    </div>
+
+    <v-form ref="form" v-model="isFormValid" lazy-validation>
+      <v-container class="form-right">
+        <v-text-field
+          v-model="promoName"
+          :rules="promoNameRules"
+          label="Promotion Code Name"
+          required
+        >
+        </v-text-field>
+        <v-menu
+          v-model="startDateMenu"
+          :close-on-content-click="false"
+          :nudge-top="50"
+          transition="scale-transition"
+          offset-y
+          min-width="290px"
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field
+              v-model="startDate"
+              label="Start Date"
+              :rules="startDateRules"
+              readonly
+              v-on="on"
+            ></v-text-field>
+          </template>
+          <v-date-picker
+            v-model="startDate"
+            :min="minDate"
+            @input="
+              startDateMenu = false;
+              minDateOnChange();
+            "
+          ></v-date-picker>
+        </v-menu>
+        <v-menu
+          v-model="endDateMenu"
+          :close-on-content-click="false"
+          :nudge-top="50"
+          transition="scale-transition"
+          offset-y
+          min-width="290px"
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field v-model="endDate" label="Expiry Date" readonly v-on="on"></v-text-field>
+          </template>
+          <v-date-picker
+            v-model="endDate"
+            :min="minEndDate"
+            @input="
+              endDateMenu = false;
+            "
+          ></v-date-picker>
+        </v-menu>
+        <v-text-field
+          v-model="useLimit"
+          :rules="useLimitRules"
+          label="Usage Limit"
+          required
+          @keypress="isNumber($event)"
+        >
+        </v-text-field>
+        <v-text-field
+          v-model="usePerUser"
+          :rules="usePerUserRules"
+          label="Usage Per User"
+          required
+          @keypress="isNumber($event)"
+        >
+        </v-text-field>
+        <v-select
+          v-model="selectedDiscountType"
+          :items="discountType"
+          label="Discount Type"
+          :rules="discountTypeRules"
+          required
+        ></v-select>
+        <v-text-field
+          v-model="discount"
+          :rules="discountRules"
+          label="Discount"
+          required
+        ></v-text-field>
+        <v-select
+          v-model="selectedValidProducts"
+          :items="validProducts"
+          label="Valid Products"
+          :rules="productsRules"
+          multiple
+          persistent-hint
+          chips
+          required
+        ></v-select>
+        <v-select
+          v-model="selectedValidVenues"
+          :items="validVenues"
+          label="Valid Venues"
+          :rules="venuesRules"
+          multiple
+          persistent-hint
+          chips
+          required
+        ></v-select>
+        <br />
+        <v-btn
+          class="mr-4"
+          color="primary"
+          @click="
+            tempValidTiming = deepCopyFunction(validTiming);
+            editTimingDialog = true;
+          "
+          >Edit Valid Timing</v-btn
+        >
+        <br />
+        <br />
+        <v-btn class="mr-4" color="primary" @click="submit">Add</v-btn>
+      </v-container>
+    </v-form>
+
+    <v-dialog v-model="editTimingDialog" max-width="1000px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Edit Valid Timing</span>
+          <v-spacer></v-spacer>
+          <v-btn class="mr-4" color="primary" @click="addDayDialog = true">
+            Add Day of the Week</v-btn
+          >
+        </v-card-title>
+
+        <div v-for="(validTiming, index) in this.validTiming" :key="index" class="timingTable">
+          <div class="dayWrapper">
+            <span>{{ validTiming.day }} </span>
+            <v-icon small class="delete-icon" @click="deleteDay(index)">mdi-delete</v-icon>
+            <v-btn
+              class="mr-4"
+              color="primary"
+              @click="
+                addTimeDialog = true;
+                tempTimingIndex = index;
+              "
+            >
+              Add Timing</v-btn
+            >
+          </div>
+
+          <div v-for="(timing, index) in validTiming.timing" :key="index" class="timeWrapper">
+            <div>
+              <span>{{ timing.startTime }} - {{ timing.endTime }}</span>
+              <v-icon small class="delete-icon" @click="deleteTiming(validTiming, index)"
+                >mdi-delete</v-icon
+              >
+            </div>
+          </div>
+        </div>
+
+        <v-dialog v-model="addDayDialog" max-width="500px" persistent>
+          <v-card>
+            <v-card-title>
+              Add Day of the Week
+            </v-card-title>
+
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col cols="20" sm="6" md="4">
+                    <v-select
+                      v-model="dayOfWeek"
+                      :items="weekdaysAvailable"
+                      label="Select Day of Week"
+                      :rules="dayOfWeekRules"
+                      required
+                    ></v-select>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="addDayDialog = false">Cancel</v-btn>
+              <v-btn color="blue darken-1" text @click="addDayofWeek();">Add</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="addTimeDialog" max-width="500px" persistent>
+          <v-card>
+            <v-card-title>
+              Add Timing
+            </v-card-title>
+
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col cols="20" sm="6" md="4">
+                    <v-menu
+                      ref="startTimeMenu"
+                      v-model="startTimeMenu"
+                      :close-on-content-click="false"
+                      :nudge-top="50"
+                      :return-value.sync="startTime"
+                      transition="scale-transition"
+                      offset-y
+                      max-width="250px"
+                      min-width="250px"
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-text-field
+                          v-model="startTime"
+                          label="Start Time"
+                          readonly
+                          required
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-time-picker
+                        v-if="startTimeMenu"
+                        v-model="startTime"
+                        full-width
+                        @click:minute="$refs.startTimeMenu.save(startTime)"
+                      ></v-time-picker>
+                    </v-menu>
+                  </v-col>
+
+                  <v-col cols="20" sm="6" md="4">
+                    <v-menu
+                      ref="endTimeMenu"
+                      v-model="endTimeMenu"
+                      :close-on-content-click="false"
+                      :nudge-top="50"
+                      :return-value.sync="endTime"
+                      transition="scale-transition"
+                      offset-y
+                      max-width="250px"
+                      min-width="250px"
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-text-field
+                          v-model="endTime"
+                          label="End Time"
+                          readonly
+                          required
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-time-picker
+                        v-if="endTimeMenu"
+                        v-model="endTime"
+                        full-width
+                        @click:minute="$refs.endTimeMenu.save(endTime)"
+                      ></v-time-picker>
+                    </v-menu>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="addTimeDialog = false">Cancel</v-btn>
+              <v-btn color="blue darken-1" text @click="addTime">Add</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="
+              editTimingDialog = false;
+              validTiming = tempValidTiming;
+            "
+            >Cancel</v-btn
+          >
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="
+              editTimingDialog = false;
+              checkIfValidTiming();
+            "
+            >Confirm</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
+</template>
+
+<script>
+const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const validTiming = [];
+
+export default {
+  data() {
+    return {
+      isFormValid: false,
+      promoName: '',
+      promoNameRules: [v => !!v || 'Promotion Code Name is required'],
+
+      startDate: new Date().toISOString().substr(0, 10),
+      startDateMenu: false,
+      startDateRules: [
+        v => this.isStartDateValid(v) || "Start Date can't be after than Expiry Date",
+      ],
+      endDate: new Date().toISOString().substr(0, 10),
+      endDateMenu: false,
+      endDateRules: [v => this.isEndDateValid(v) || "Expiry Date can't be before than Start Date"],
+      minDate: new Date().toISOString().substr(0, 10),
+      minEndDate: new Date().toISOString().substr(0, 10),
+
+      useLimit: '',
+      useLimitRules: [v => !!v || 'Usage Limit is required'],
+      usePerUser: '',
+      usePerUserRules: [
+        v => !!v || 'Usage Per User is required',
+        v => v < this.useLimit || "Usage Per User can't be more than Usage Limit",
+      ],
+      discountType: [],
+      discountTypeRules: [v => !!v || 'Discount Type is required'],
+      selectedDiscountType: '',
+      discount: '',
+      discountRules: [v => !!v || 'Discount is required'],
+      selectedValidProducts: '',
+      validProducts: [],
+      productsRules: [v => !!v || 'Valid Product is required'],
+      selectedValidVenues: '',
+      validVenues: [],
+      venuesRules: [v => !!v || 'Valid Venues is required'],
+
+      editTimingDialog: false,
+      validTiming: [],
+      isValidTiming: false,
+      tempValidTiming: [],
+      addDayDialog: false,
+      dayOfWeek: '',
+      dayOfWeekRules: [v => !!v || 'Day of Week is required'],
+      addTimeDialog: false,
+      startTimeMenu: false,
+      startTime: '00:00',
+      endTimeMenu: false,
+      endTime: '00:00',
+      tempTimingIndex: '',
+    };
+  },
+  mounted() {
+    this.$axios
+      .get(`${process.env.VUE_APP_BACKEND}products`)
+      .then((res) => {
+        this.validProducts = this.getNameFromArray(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    this.$axios
+      .get(`${process.env.VUE_APP_BACKEND}venues`)
+      .then((res) => {
+        this.validVenues = this.getNameFromArray(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    this.validTiming = validTiming;
+    this.removeWeekDays();
+    [this.dayOfWeek] = this.weekdaysAvailable;
+    this.checkIfValidTiming();
+  },
+  methods: {
+    submit() {
+      if (this.$refs.form.validate()) {
+        if (this.fieldName !== '' && this.numOfPitches !== '' && this.selectedFieldType !== '') {
+          const data = {
+            code: this.promoName,
+            validFrom: this.startDate,
+            validTo: this.endDate,
+            usageLimit: this.useLimit,
+            usesLeft: this.useLimit,
+            usageperUser: this.usePerUser,
+            discountType: this.selectedDiscountType,
+            discount: this.discount,
+            validProduct: this.selectedValidProducts,
+            validLocation: this.selectedValidVenues,
+            timingIncluded: this.isValidTiming,
+            validTiming: this.validTiming,
+          };
+          this.$axios
+            .post(`${process.env.VUE_APP_BACKEND}promotioncode`, data)
+            .then((res) => {
+              console.log(res);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      }
+    },
+    minDateOnChange() {
+      this.minEndDate = this.startDate.split('-');
+      this.minEndDate[2] = Number(this.minEndDate[2]);
+      this.minEndDate = `${this.minEndDate[0]}-${this.minEndDate[1]}-${this.minEndDate[2]}`;
+    },
+    // eslint-disable-next-line consistent-return
+    isNumber(evt) {
+      const evt2 = evt || window.event;
+      const charCode = evt2.which ? evt2.which : evt2.keyCode;
+      if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
+        evt2.preventDefault();
+      } else {
+        return true;
+      }
+    },
+    toDateObject(date) {
+      const [year, month, day] = date.split('-');
+      return new Date(year, month - 1, day);
+    },
+    getDayOfWeek(date) {
+      return weekday[date.getDay()];
+    },
+    isStartDateValid(v) {
+      if (this.toDateObject(v) <= this.toDateObject(this.endDate)) {
+        return true;
+      }
+      return false;
+    },
+    isEndDateValid(v) {
+      if (this.toDateObject(this.startDate) <= this.toDateObject(v)) {
+        return true;
+      }
+      return false;
+    },
+    deleteDay(index) {
+      this.validTiming.splice(index, 1);
+    },
+    deleteTiming(validtiming, index) {
+      const indexOfDay = this.validTiming.indexOf(validtiming);
+      this.validTiming[indexOfDay].timing.splice(index, 1);
+    },
+    addDayofWeek() {
+      if (this.dayOfWeek) {
+        this.validTiming.push({
+          day: this.dayOfWeek,
+          timing: [],
+        });
+        this.addDayDialog = false;
+      }
+    },
+    addTime() {
+      this.validTiming[this.tempTimingIndex].timing.push({
+        startTime: this.startTime,
+        endTime: this.endTime,
+      });
+      this.addTimeDialog = false;
+    },
+    removeWeekDays() {
+      for (let i = 0; i < this.validTiming.length; i += 1) {
+        const obj = this.validTiming[i];
+        if (this.weekdaysAvailable[i] === obj.day) {
+          this.weekdaysAvailable.splice(i, 1);
+        }
+      }
+    },
+    deepCopyFunction(inObject) {
+      return JSON.parse(JSON.stringify(inObject));
+    },
+    getNameFromArray(obj) {
+      const outObj = [];
+      for (let i = 0; i < obj.length; i += 1) {
+        outObj.push(obj[i].name);
+      }
+      return outObj;
+    },
+    checkIfValidTiming() {
+      if (this.validTiming.length === 0) {
+        this.isValidTiming = false;
+      } else {
+        this.isValidTiming = true;
+      }
+    },
+  },
+  watch: {
+    validTiming() {
+      if (this.validTiming.length === 0) {
+        this.isValidTiming = false;
+      } else {
+        this.isValidTiming = true;
+        this.removeWeekDays();
+      }
+    },
+  },
+  computed: {
+    weekdaysAvailable() {
+      const arr = [];
+      for (
+        let dt = this.toDateObject(this.startDate);
+        dt <= this.toDateObject(this.endDate);
+        dt.setDate(dt.getDate() + 1)
+      ) {
+        arr.push(this.getDayOfWeek(new Date(dt)));
+      }
+      if (arr.length > 7) {
+        return weekday;
+      }
+      return arr;
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.timingTable {
+  border: 1px #707070 solid;
+  margin: 10px 25px;
+}
+.delete-icon {
+  float: right;
+}
+.timingTable .timeWrapper {
+  font-family: "Monst Regular";
+  height: auto;
+  padding: 10px;
+}
+.timingTable .dayWrapper {
+  font-family: "Monst Regular";
+  padding: 15px 10px;
+  background-color: #e9e9e9;
+}
+.dayWrapper button {
+  float: right;
+  font-family: Roboto, sans-serif;
+  margin-top: -6px;
+  font-size: 12px;
+}
+.timingTable i {
+  padding-top: 4px;
+}
+</style>

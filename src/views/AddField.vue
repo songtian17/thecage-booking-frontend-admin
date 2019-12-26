@@ -9,8 +9,13 @@
 
     <v-form ref="form" v-model="isFormValid" lazy-validation>
       <v-container class="form-right">
-        <v-text-field v-model="fieldName" :rules="nameRules" label="Field Name" required>
-        </v-text-field>
+        <v-text-field
+          v-model="fieldName"
+          :rules="nameRules"
+          label="Field Name"
+          required
+        ></v-text-field>
+        <v-text-field v-model="odooId" label="Odoo ID" @keypress="isNumber($event)"> </v-text-field>
         <v-text-field
           v-model="numOfPitches"
           :rules="numOfPitchesRules"
@@ -19,6 +24,13 @@
           @keypress="isNumber($event)"
         >
         </v-text-field>
+        <v-select
+          v-model="selectedFieldType"
+          :items="fieldType"
+          label="Field Type"
+          :rules="fieldTypeRules"
+          required
+        ></v-select>
 
         <v-menu
           ref="menu"
@@ -44,14 +56,25 @@
         <v-btn color="primary" class="mr-4" @click="submit">Add</v-btn>
       </v-container>
     </v-form>
+
+    <notification
+      :showDialog="showNotiDialog"
+      msg="Do remember to add Odoo ID for every pitches."
+      @close="close()"
+    ></notification>
   </div>
 </template>
 
 <script>
+import Notification from '../components/NotiModal.vue';
+
 export default {
   data() {
     return {
+      showNotiDialog: false,
       venueId: this.$route.params.id,
+      odooId: '',
+      odooIdRules: [v => !!v || 'Odoo Id is required'],
       isFormValid: false,
       fieldName: '',
       numOfPitches: '',
@@ -63,24 +86,40 @@ export default {
       menu: false,
       type: 'hex',
       hex: '#9F0608',
+      fieldType: ['5-A-Side', '7-A-Side', '11-A-Side'],
+      selectedFieldType: '',
+      fieldTypeRules: [v => !!v || 'Field Type is required'],
     };
+  },
+  components: {
+    Notification,
   },
   methods: {
     submit() {
       if (this.$refs.form.validate()) {
-        if (this.fieldName !== '' && this.numOfPitches !== '') {
-          const data = { name: this.fieldName, num_pitches: this.numOfPitches, colour: this.hex };
+        if (this.fieldName !== '' && this.numOfPitches !== '' && this.selectedFieldType !== '') {
+          const data = {
+            name: this.fieldName,
+            odooId: this.odooId,
+            numPitches: this.numOfPitches,
+            colour: this.hex,
+            fieldType: this.selectedFieldType,
+          };
           this.$axios
             .post(`${process.env.VUE_APP_BACKEND}field/${this.venueId}`, data)
             .then((res) => {
               console.log(res);
-              this.$router.go(-1);
+              this.showNotiDialog = true;
             })
             .catch((err) => {
               console.log(err);
             });
         }
       }
+    },
+    close() {
+      this.showNotiDialog = false;
+      this.$router.go(-1);
     },
     // eslint-disable-next-line consistent-return
     isNumber(evt) {

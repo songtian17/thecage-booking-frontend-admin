@@ -14,9 +14,12 @@ import EditAdmin from '../views/EditAdmin.vue';
 
 import Announcement from '../views/Announcement.vue';
 import TimingDiscount from '../views/EditTimingDiscount.vue';
+
 import PromoCode from '../views/PromoCode.vue';
+import AddPromo from '../views/AddPromo.vue';
 
 import Customers from '../views/Customers.vue';
+import BookingHistory from '../views/BookingHistory.vue';
 
 Vue.use(VueRouter);
 
@@ -108,6 +111,14 @@ const routes = [
     },
   },
   {
+    path: '/AddPromo',
+    name: 'AddPromo',
+    component: AddPromo,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
     path: '/EditTimingDiscount',
     name: 'EditTimingDiscount',
     component: TimingDiscount,
@@ -119,6 +130,14 @@ const routes = [
     path: '/Customers',
     name: 'Customers',
     component: Customers,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/BookingHistory/:id',
+    name: 'BookingHistory',
+    component: BookingHistory,
     meta: {
       requiresAuth: true,
     },
