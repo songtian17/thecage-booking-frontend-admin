@@ -12,35 +12,41 @@
         <v-tab>Bottom</v-tab>
 
         <v-tab-item>
-          <div id="md" class="half-content">
-            <h2 class="header">Enter Markdown Text</h2>
-            <textarea
-              v-model="topText"
-              style="height:auto"
-              rows="16"
-              class="form-control"
-            ></textarea>
-          </div>
-          <div id="preview" class="half-content">
-            <h2 class="header">Preview</h2>
-            <div class="well well-sm pre-scrollable" v-html="previewTopText"></div>
+          <div>
+            <div id="md" class="half-content">
+              <h2 class="header">Enter Markdown Text</h2>
+              <textarea
+                v-model="topText"
+                style="height:auto"
+                rows="16"
+                class="form-control"
+              ></textarea>
+            </div>
+            <div id="preview" class="half-content">
+              <h2 class="header">Preview</h2>
+              <div class="well well-sm pre-scrollable" v-html="previewTopText"></div>
+            </div>
+            <v-checkbox v-model="isTopVisible" label="Visible" class="checkbox"></v-checkbox>
           </div>
         </v-tab-item>
 
         <v-tab-item>
-          <div id="md" class="half-content">
-            <h2 class="header">Enter Markdown Text</h2>
-            <textarea
-              v-model="botText"
-              style="height:auto"
-              rows="16"
-              class="form-control"
-            ></textarea>
+          <div>
+            <div id="md" class="half-content">
+              <h2 class="header">Enter Markdown Text</h2>
+              <textarea
+                v-model="botText"
+                style="height:auto"
+                rows="16"
+                class="form-control"
+              ></textarea>
+            </div>
+            <div id="preview" class="half-content">
+              <h2 class="header">Preview</h2>
+              <div class="well well-sm pre-scrollable" v-html="previewBotText"></div>
+            </div>
           </div>
-          <div id="preview" class="half-content">
-            <h2 class="header">Preview</h2>
-            <div class="well well-sm pre-scrollable" v-html="previewBotText"></div>
-          </div>
+          <v-checkbox v-model="isBotVisible" label="Visible" class="checkbox"></v-checkbox>
         </v-tab-item>
       </v-tabs>
     </div>
@@ -54,43 +60,108 @@ const marked = require('marked');
 export default {
   data() {
     return {
-      topText: '# Top',
-      botText: '# Bottom',
+      topText: '',
+      isTopVisible: true,
+      isBotVisible: true,
+      botText: '',
     };
   },
   computed: {
     // return this to backend
-    previewTopText() {
-      marked.setOptions({
-        renderer: new marked.Renderer(),
-        gfm: true,
-        tables: true,
-        breaks: true,
-        pedantic: false,
-        sanitize: true,
-        smartLists: true,
-        smartypants: false,
-      });
-      return marked(this.topText);
+    previewTopText: {
+      get() {
+        marked.setOptions({
+          renderer: new marked.Renderer(),
+          gfm: true,
+          tables: true,
+          breaks: true,
+          pedantic: false,
+          sanitize: true,
+          smartLists: true,
+          smartypants: false,
+        });
+        return marked(this.topText);
+      },
+      set(previewTopText) {
+        return previewTopText;
+      },
     },
-    previewBotText() {
-      marked.setOptions({
-        renderer: new marked.Renderer(),
-        gfm: true,
-        tables: true,
-        breaks: true,
-        pedantic: false,
-        sanitize: true,
-        smartLists: true,
-        smartypants: false,
-      });
-      return marked(this.botText);
+    previewBotText: {
+      get() {
+        marked.setOptions({
+          renderer: new marked.Renderer(),
+          gfm: true,
+          tables: true,
+          breaks: true,
+          pedantic: false,
+          sanitize: true,
+          smartLists: true,
+          smartypants: false,
+        });
+        return marked(this.botText);
+      },
+      set(previewBotText) {
+        return previewBotText;
+      },
     },
   },
   methods: {
     submit() {
-      return this.previewTopText;
+      const topData = {
+        markdownString: this.topText,
+        htmlString: this.previewTopText,
+        visibility: this.isTopVisible,
+        placement: 'Top',
+      };
+      this.$axios
+        .put(`${process.env.VUE_APP_BACKEND}announcement/1`, topData)
+        .then((res) => {
+          console.log(res);
+          this.$router.go();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      const botData = {
+        markdownString: this.botText,
+        htmlString: this.previewBotText,
+        visibility: this.isBotVisible,
+        placement: 'Bottom',
+      };
+      this.$axios
+        .put(`${process.env.VUE_APP_BACKEND}announcement/2`, botData)
+        .then((res) => {
+          console.log(res);
+          this.$router.go();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
+  },
+  mounted() {
+    this.$axios
+      .get(`${process.env.VUE_APP_BACKEND}announcement/1`)
+      .then((res) => {
+        console.log(res.data);
+        this.topText = res.data.markdown_string;
+        this.isTopVisible = res.data.visibility;
+        this.previewTopText = res.data.html_string;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    this.$axios
+      .get(`${process.env.VUE_APP_BACKEND}announcement/2`)
+      .then((res) => {
+        console.log(res.data);
+        this.botText = res.data.markdown_string;
+        this.isBotVisible = res.data.visibility;
+        this.previewBotText = res.data.html_string;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   },
 };
 </script>
@@ -137,6 +208,10 @@ export default {
   font-size: 18px;
   text-align: left;
   padding: 20px 0;
+}
+.checkbox {
+  margin-top: 0;
+  padding-left: 25px;
 }
 @media (min-width: 992px) {
   .half-content {

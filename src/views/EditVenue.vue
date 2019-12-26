@@ -24,14 +24,12 @@
       :headers="headers"
       :items="fields"
       item-key="name"
-      :disable-sort="true"
-      :hide-default-header="false"
-      :hide-default-footer="true"
       class="elevation-1"
     >
       <template v-slot:top>
         <v-toolbar flat color="white">
           <v-toolbar-title>Fields</v-toolbar-title>
+          <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
           <v-btn color="primary" dark :to="`/AddField/${venueId}`">Add Field</v-btn>
         </v-toolbar>
@@ -46,7 +44,7 @@
       </template>
     </v-data-table>
 
-        <confirm
+    <confirm
       :showDialog="showConfirmationDialog"
       @confirm="
         deleteField();
@@ -75,17 +73,20 @@ export default {
           text: 'Field Name',
           align: 'left',
           value: 'name',
-          width: '',
         },
         {
           text: 'Number of Pitches',
           value: 'num_pitches',
-          width: '',
+        },
+        {
+          text: 'Field Type',
+          value: 'field_type',
         },
         {
           text: 'Action',
           value: 'action',
           width: '75px',
+          sortable: false,
         },
       ],
     };

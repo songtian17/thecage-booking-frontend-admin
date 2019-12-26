@@ -4,7 +4,7 @@
       <v-btn icon to="/">
         <v-icon small class="mr-2" style="margin-right:0!important">mdi-chevron-left</v-icon>
       </v-btn>
-      <span class="text">Edit Timing Accounts</span>
+      <span class="text">Edit Timing Discounts</span>
     </div>
 
     <v-form ref="form" v-model="isFormValid" lazy-validation>
@@ -34,7 +34,6 @@
             v-if="menu"
             v-model="startTime"
             full-width
-            :allowed-minutes="allowedStep"
             @click:minute="$refs.menu.save(startTime)"
           ></v-time-picker>
         </v-menu>
@@ -63,7 +62,6 @@
             v-if="menu2"
             v-model="endTime"
             full-width
-            :allowed-minutes="allowedStep"
             @click:minute="$refs.menu2.save(endTime)"
           ></v-time-picker>
         </v-menu>
@@ -80,10 +78,7 @@
           label="Discount"
           required
         ></v-text-field>
-            <v-checkbox
-      v-model="isActive"
-      :label="` Active `"
-    ></v-checkbox>
+        <v-checkbox v-model="isActive" :label="` Active `"></v-checkbox>
         <v-btn class="mr-4" color="primary" @click="submit">save changes</v-btn>
       </v-container>
     </v-form>
@@ -101,7 +96,7 @@ export default {
       isFormValid: false,
       startTimeRules: [v => !!v || 'Start Time is required'],
       endTimeRules: [v => !!v || 'End Time is required'],
-      discountType: ['Foo', 'Bar', 'Fizz', 'Buzz'],
+      discountType: ['Price', 'Percentage'],
       discountTypeRules: [v => !!v || 'Discount Type is required'],
       selectedDiscountType: '',
       discount: '',
@@ -109,12 +104,42 @@ export default {
       isActive: false,
     };
   },
+  mounted() {
+    this.$axios
+      .get(`${process.env.VUE_APP_BACKEND}discount/1`)
+      .then((res) => {
+        console.log(res.data);
+        this.startTime = res.data.start_time.substring(0, 5);
+        this.endTime = res.data.end_time.substring(0, 5);
+        this.selectedDiscountType = res.data.discount_type;
+        this.discount = res.data.discount;
+        this.isActive = res.data.status;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  },
   methods: {
-    allowedStep: m => m % 10 === 0,
+    // allowedStep: m => m % 10 === 0,
     submit() {
       if (this.$refs.form.validate()) {
-        // this.snackbar = true;
-        // TODO: submit form to back end
+        if (this.discount !== '') {
+          const data = {
+            startTime: this.startTime,
+            endTime: this.endTime,
+            discountType: this.selectedDiscountType,
+            discount: this.discount,
+            status: this.isActive,
+          };
+          this.$axios
+            .put(`${process.env.VUE_APP_BACKEND}discount/1`, data)
+            .then(() => {
+              this.$router.go();
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
       }
     },
   },
