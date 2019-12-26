@@ -7,7 +7,7 @@
             <v-list-item-title>Venue and Fields</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link to="PromoCode">
+        <v-list-item link to="/PromoCode">
           <v-list-item-content>
             <v-list-item-title>Promotion Code</v-list-item-title>
           </v-list-item-content>

@@ -77,7 +77,7 @@ export default {
       if (this.id !== '' && this.password !== '') {
         const data = { id: this.id, password: this.password };
         this.$axios
-          .post('http://localhost:5000/authentication', data)
+          .post('http://localhost:3000/authentication', data)
           .then((res) => {
             // console.log(res);
             const { token } = res.data;
