@@ -56,9 +56,7 @@
           <v-date-picker
             v-model="endDate"
             :min="minEndDate"
-            @input="
-              endDateMenu = false;
-            "
+            @input="endDateMenu = false"
           ></v-date-picker>
         </v-menu>
         <v-text-field
@@ -115,8 +113,9 @@
           class="mr-4"
           color="primary"
           @click="
-            tempValidTiming = deepCopyFunction(validTiming);
+            tempValidTiming = deepCopyFunction(selectedValidDays);
             editTimingDialog = true;
+            calculateAvailableWeekdays();
           "
           >Edit Valid Timing</v-btn
         >
@@ -136,10 +135,22 @@
           >
         </v-card-title>
 
-        <div v-for="(validTiming, index) in this.validTiming" :key="index" class="timingTable">
+        <div
+          v-for="(selectedValidDays, index) in this.selectedValidDays"
+          :key="index"
+          class="timingTable"
+        >
           <div class="dayWrapper">
-            <span>{{ validTiming.day }} </span>
-            <v-icon small class="delete-icon" @click="deleteDay(index)">mdi-delete</v-icon>
+            <span>{{ selectedValidDays.day }} </span>
+            <v-icon
+              small
+              class="delete-icon"
+              @click="
+                deleteDay(index);
+                addToWeekdaysAvailable(selectedValidDays.day);
+              "
+              >mdi-delete</v-icon
+            >
             <v-btn
               class="mr-4"
               color="primary"
@@ -152,10 +163,10 @@
             >
           </div>
 
-          <div v-for="(timing, index) in validTiming.timing" :key="index" class="timeWrapper">
+          <div v-for="(timing, index) in selectedValidDays.timing" :key="index" class="timeWrapper">
             <div>
               <span>{{ timing.startTime }} - {{ timing.endTime }}</span>
-              <v-icon small class="delete-icon" @click="deleteTiming(validTiming, index)"
+              <v-icon small class="delete-icon" @click="deleteTiming(selectedValidDays, index)"
                 >mdi-delete</v-icon
               >
             </div>
@@ -173,7 +184,7 @@
                 <v-row>
                   <v-col cols="20" sm="6" md="4">
                     <v-select
-                      v-model="dayOfWeek"
+                      v-model="selectedDay"
                       :items="weekdaysAvailable"
                       label="Select Day of Week"
                       :rules="dayOfWeekRules"
@@ -187,7 +198,7 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="addDayDialog = false">Cancel</v-btn>
-              <v-btn color="blue darken-1" text @click="addDayofWeek();">Add</v-btn>
+              <v-btn color="blue darken-1" text @click="addDayofWeek">Add</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -279,7 +290,7 @@
             text
             @click="
               editTimingDialog = false;
-              validTiming = tempValidTiming;
+              selectedValidDays = tempValidTiming;
             "
             >Cancel</v-btn
           >
@@ -299,8 +310,7 @@
 </template>
 
 <script>
-const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const validTiming = [];
+const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 export default {
   data() {
@@ -340,11 +350,11 @@ export default {
       venuesRules: [v => !!v || 'Valid Venues is required'],
 
       editTimingDialog: false,
-      validTiming: [],
+      selectedValidDays: [],
       isValidTiming: false,
       tempValidTiming: [],
       addDayDialog: false,
-      dayOfWeek: '',
+      selectedDay: '',
       dayOfWeekRules: [v => !!v || 'Day of Week is required'],
       addTimeDialog: false,
       startTimeMenu: false,
@@ -352,6 +362,7 @@ export default {
       endTimeMenu: false,
       endTime: '00:00',
       tempTimingIndex: '',
+      weekdaysAvailable: weekdays,
     };
   },
   mounted() {
@@ -371,10 +382,6 @@ export default {
       .catch((err) => {
         console.log(err);
       });
-
-    this.validTiming = validTiming;
-    this.removeWeekDays();
-    [this.dayOfWeek] = this.weekdaysAvailable;
     this.checkIfValidTiming();
   },
   methods: {
@@ -393,7 +400,7 @@ export default {
             validProduct: this.selectedValidProducts,
             validLocation: this.selectedValidVenues,
             timingIncluded: this.isValidTiming,
-            validTiming: this.validTiming,
+            selectedValidDays: this.selectedValidDays,
           };
           this.$axios
             .post(`${process.env.VUE_APP_BACKEND}promotioncode`, data)
@@ -426,7 +433,7 @@ export default {
       return new Date(year, month - 1, day);
     },
     getDayOfWeek(date) {
-      return weekday[date.getDay()];
+      return weekdays[date.getDay()];
     },
     isStartDateValid(v) {
       if (this.toDateObject(v) <= this.toDateObject(this.endDate)) {
@@ -441,35 +448,32 @@ export default {
       return false;
     },
     deleteDay(index) {
-      this.validTiming.splice(index, 1);
+      this.selectedValidDays.splice(index, 1);
     },
-    deleteTiming(validtiming, index) {
-      const indexOfDay = this.validTiming.indexOf(validtiming);
-      this.validTiming[indexOfDay].timing.splice(index, 1);
+    deleteTiming(selectedValidDays, index) {
+      const indexOfDay = this.selectedValidDays.indexOf(selectedValidDays);
+      this.selectedValidDays[indexOfDay].timing.splice(index, 1);
     },
     addDayofWeek() {
-      if (this.dayOfWeek) {
-        this.validTiming.push({
-          day: this.dayOfWeek,
+      // click thursday, then click add
+      if (this.selectedDay) {
+        this.selectedValidDays.push({
+          day: this.selectedDay,
           timing: [],
         });
+        this.weekdaysAvailable = this.weekdaysAvailable.filter(e => e !== this.selectedDay);
         this.addDayDialog = false;
       }
     },
+    addToWeekdaysAvailable(day) {
+      this.weekdaysAvailable.push(day);
+    },
     addTime() {
-      this.validTiming[this.tempTimingIndex].timing.push({
+      this.selectedValidDays[this.tempTimingIndex].timing.push({
         startTime: this.startTime,
         endTime: this.endTime,
       });
       this.addTimeDialog = false;
-    },
-    removeWeekDays() {
-      for (let i = 0; i < this.validTiming.length; i += 1) {
-        const obj = this.validTiming[i];
-        if (this.weekdaysAvailable[i] === obj.day) {
-          this.weekdaysAvailable.splice(i, 1);
-        }
-      }
     },
     deepCopyFunction(inObject) {
       return JSON.parse(JSON.stringify(inObject));
@@ -482,37 +486,41 @@ export default {
       return outObj;
     },
     checkIfValidTiming() {
-      if (this.validTiming.length === 0) {
+      if (this.selectedValidDays.length === 0) {
         this.isValidTiming = false;
       } else {
         this.isValidTiming = true;
       }
+    },
+    calculateAvailableWeekdays() {
+      const arr = [];
+      if (!this.startDate || !this.endDate) {
+        return;
+      }
+      const startDate = this.toDateObject(this.startDate);
+      const endDate = this.toDateObject(this.endDate);
+      const timeDiff = endDate.getTime() - startDate.getTime();
+      const dayDiff = timeDiff / (1000 * 3600 * 24);
+      if (dayDiff >= 7) {
+        return;
+      }
+      for (startDate; startDate <= endDate; startDate.setDate(startDate.getDate() + 1)) {
+        arr.push(this.getDayOfWeek(new Date(startDate)));
+      }
+      if (this.selectedValidDays.length) {
+        this.weekdaysAvailable = arr.filter(e => !this.selectedValidDays.find(el => el.day === e));
+        return;
+      }
+      this.weekdaysAvailable = arr;
     },
   },
   watch: {
-    validTiming() {
-      if (this.validTiming.length === 0) {
+    selectedValidDays() {
+      if (this.selectedValidDays.length === 0) {
         this.isValidTiming = false;
       } else {
         this.isValidTiming = true;
-        this.removeWeekDays();
       }
-    },
-  },
-  computed: {
-    weekdaysAvailable() {
-      const arr = [];
-      for (
-        let dt = this.toDateObject(this.startDate);
-        dt <= this.toDateObject(this.endDate);
-        dt.setDate(dt.getDate() + 1)
-      ) {
-        arr.push(this.getDayOfWeek(new Date(dt)));
-      }
-      if (arr.length > 7) {
-        return weekday;
-      }
-      return arr;
     },
   },
 };
