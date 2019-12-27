@@ -17,6 +17,7 @@ import TimingDiscount from '../views/EditTimingDiscount.vue';
 
 import PromoCode from '../views/PromoCode.vue';
 import AddPromo from '../views/AddPromo.vue';
+import EditPromo from '../views/EditPromo.vue';
 
 import Customers from '../views/Customers.vue';
 import BookingHistory from '../views/BookingHistory.vue';
@@ -116,6 +117,14 @@ const routes = [
     path: '/AddPromo',
     name: 'AddPromo',
     component: AddPromo,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/EditPromo/:id',
+    name: 'EditPromo',
+    component: EditPromo,
     meta: {
       requiresAuth: true,
     },
