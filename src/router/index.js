@@ -21,6 +21,8 @@ import AddPromo from '../views/AddPromo.vue';
 import Customers from '../views/Customers.vue';
 import BookingHistory from '../views/BookingHistory.vue';
 
+import AccSettings from '../views/AccSettings.vue';
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -138,6 +140,14 @@ const routes = [
     path: '/BookingHistory/:id',
     name: 'BookingHistory',
     component: BookingHistory,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/AccountSettings',
+    name: 'AccountSettings',
+    component: AccSettings,
     meta: {
       requiresAuth: true,
     },

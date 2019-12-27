@@ -43,7 +43,9 @@
         <v-btn text large @click="logout()">Sign Out</v-btn>
       </div>
       <div class="my-2">
-        <v-btn text><v-icon>mdi-settings</v-icon></v-btn>
+        <router-link to="/AccountSettings">
+          <v-btn text><v-icon>mdi-settings</v-icon></v-btn>
+          </router-link>
       </div>
     </v-app-bar>
   </div>
