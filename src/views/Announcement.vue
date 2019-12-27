@@ -115,8 +115,7 @@ export default {
       };
       this.$axios
         .put(`${process.env.VUE_APP_BACKEND}announcement/1`, topData)
-        .then((res) => {
-          console.log(res);
+        .then(() => {
           this.$router.go();
         })
         .catch((err) => {
@@ -130,8 +129,7 @@ export default {
       };
       this.$axios
         .put(`${process.env.VUE_APP_BACKEND}announcement/2`, botData)
-        .then((res) => {
-          console.log(res);
+        .then(() => {
           this.$router.go();
         })
         .catch((err) => {
@@ -143,7 +141,6 @@ export default {
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND}announcement/1`)
       .then((res) => {
-        console.log(res.data);
         this.topText = res.data.markdown_string;
         this.isTopVisible = res.data.visibility;
         this.previewTopText = res.data.html_string;
@@ -154,7 +151,6 @@ export default {
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND}announcement/2`)
       .then((res) => {
-        console.log(res.data);
         this.botText = res.data.markdown_string;
         this.isBotVisible = res.data.visibility;
         this.previewBotText = res.data.html_string;

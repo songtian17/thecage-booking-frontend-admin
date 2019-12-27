@@ -42,8 +42,7 @@ export default {
           const data = { id: this.id, user_id: this.adminId, password: this.password };
           this.$axios
             .put(`${process.env.VUE_APP_BACKEND}admin/${this.id}`, data)
-            .then((res) => {
-              console.log(res);
+            .then(() => {
             })
             .catch((err) => {
               console.log(err);
@@ -56,7 +55,6 @@ export default {
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND}admin/${this.id}`)
       .then((res) => {
-        this.password = res.data.password;
         this.adminId = res.data.user_id;
       })
       .catch((err) => {
