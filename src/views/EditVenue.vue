@@ -75,12 +75,16 @@ export default {
           value: 'name',
         },
         {
-          text: 'Number of Pitches',
-          value: 'num_pitches',
+          text: 'Odoo ID',
+          value: 'odoo_id',
         },
         {
           text: 'Field Type',
           value: 'field_type',
+        },
+        {
+          text: 'Number of Pitches',
+          value: 'num_pitches',
         },
         {
           text: 'Action',
@@ -130,7 +134,6 @@ export default {
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND}venue/${this.venueId}`)
       .then((res) => {
-        console.log(res.data);
         this.venueName = res.data.name;
         this.fields = res.data.fields;
       })
@@ -140,7 +143,6 @@ export default {
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND}fields/${this.venueId}`)
       .then((res) => {
-        console.log(res.data);
         this.fields = res.data;
       })
       .catch((err) => {
