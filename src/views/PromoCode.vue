@@ -22,7 +22,7 @@
 
       <v-data-table :headers="headers" :items="promoCodes" :search="search">
         <template v-slot:item.action="{ item }">
-          <router-link :to="`../EditPromoCode/${item.id}`">
+          <router-link :to="`../EditPromo/${item.id}`">
             <v-icon small class="mr-2">mdi-pencil-outline</v-icon>
           </router-link>
           <v-icon small @click="getPromoId(item)">mdi-delete</v-icon>
@@ -60,7 +60,7 @@ export default {
         { text: 'Start Date', value: 'valid_from' },
         { text: 'Expiry Date', value: 'valid_to' },
         { text: 'Usage Limit', value: 'usage_limit' },
-        { text: 'Uses Left', value: 'uses_left' },
+        { text: 'Times Used', value: 'times_used' },
         { text: 'Usage per User', value: 'usage_per_user' },
         { text: 'Discount', value: 'discount' },
         { text: 'Discount Type', value: 'discount_type' },

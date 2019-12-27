@@ -398,7 +398,6 @@ export default {
             validFrom: this.startDate,
             validTo: this.endDate,
             usageLimit: this.useLimit,
-            usesLeft: this.useLimit,
             usageperUser: this.usePerUser,
             discountType: this.selectedDiscountType,
             discount: this.discount,
