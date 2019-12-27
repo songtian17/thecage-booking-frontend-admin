@@ -333,11 +333,8 @@ export default {
       useLimit: '',
       useLimitRules: [v => !!v || 'Usage Limit is required'],
       usePerUser: '',
-      usePerUserRules: [
-        v => !!v || 'Usage Per User is required',
-        v => v < this.useLimit || "Usage Per User can't be more than Usage Limit",
-      ],
-      discountType: [],
+      usePerUserRules: [v => !!v || 'Usage Per User is required'],
+      discountType: ['Price', 'Percentage'],
       discountTypeRules: [v => !!v || 'Discount Type is required'],
       selectedDiscountType: '',
       discount: '',
@@ -387,7 +384,15 @@ export default {
   methods: {
     submit() {
       if (this.$refs.form.validate()) {
-        if (this.fieldName !== '' && this.numOfPitches !== '' && this.selectedFieldType !== '') {
+        if (
+          this.promoName !== ''
+          && this.useLimit !== ''
+          && this.usePerUser !== ''
+          && this.selectedDiscountType !== ''
+          && this.discount !== ''
+          && this.selectedValidProducts !== ''
+          && this.selectedValidVenues !== ''
+        ) {
           const data = {
             code: this.promoName,
             validFrom: this.startDate,
@@ -397,15 +402,15 @@ export default {
             usageperUser: this.usePerUser,
             discountType: this.selectedDiscountType,
             discount: this.discount,
-            validProduct: this.selectedValidProducts,
-            validLocation: this.selectedValidVenues,
+            validProducts: this.selectedValidProducts,
+            validLocations: this.selectedValidVenues,
             timingIncluded: this.isValidTiming,
-            selectedValidDays: this.selectedValidDays,
+            validTiming: this.selectedValidDays,
           };
           this.$axios
             .post(`${process.env.VUE_APP_BACKEND}promotioncode`, data)
-            .then((res) => {
-              console.log(res);
+            .then(() => {
+              this.$router.go(-1);
             })
             .catch((err) => {
               console.log(err);
@@ -450,6 +455,10 @@ export default {
     deleteDay(index) {
       this.selectedValidDays.splice(index, 1);
     },
+    // add day back to the list when item deleted from array
+    addToWeekdaysAvailable(day) {
+      this.weekdaysAvailable.push(day);
+    },
     deleteTiming(selectedValidDays, index) {
       const indexOfDay = this.selectedValidDays.indexOf(selectedValidDays);
       this.selectedValidDays[indexOfDay].timing.splice(index, 1);
@@ -464,9 +473,6 @@ export default {
         this.weekdaysAvailable = this.weekdaysAvailable.filter(e => e !== this.selectedDay);
         this.addDayDialog = false;
       }
-    },
-    addToWeekdaysAvailable(day) {
-      this.weekdaysAvailable.push(day);
     },
     addTime() {
       this.selectedValidDays[this.tempTimingIndex].timing.push({

@@ -29,13 +29,26 @@
         </template>
       </v-data-table>
     </v-card>
+
+    <confirm
+      :showDialog="showConfirmationDialog"
+      @confirm="
+        deletePromo();
+        showConfirmationDialog = false;
+      "
+      @cancel="showConfirmationDialog = false"
+    ></confirm>
   </div>
 </template>
 
 <script>
+import Confirm from '../components/ConfirmationModal.vue';
+
 export default {
   data() {
     return {
+      showConfirmationDialog: false,
+      deletePromoId: '',
       search: '',
       headers: [
         {
@@ -66,6 +79,9 @@ export default {
       promoCodes: [],
     };
   },
+  components: {
+    Confirm,
+  },
   mounted() {
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND}promotioncodes`)
@@ -80,6 +96,20 @@ export default {
       });
   },
   methods: {
+    deletePromo() {
+      this.$axios
+        .delete(`${process.env.VUE_APP_BACKEND}promotioncode/${this.deletePromoId}`)
+        .then(() => {
+          this.$router.go();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    getPromoId(item) {
+      this.deletePromoId = item.id;
+      this.showConfirmationDialog = true;
+    },
     redirectBookHist(row) {
       this.$router.push(`/BookingHistory/${row.id}`);
     },
@@ -94,30 +124,16 @@ export default {
     getLocNameFromArray() {
       const outObj = this.promoCodes;
       for (let i = 0; i < outObj.length; i += 1) {
-        let validLocString = '';
-        for (let j = 0; j < outObj[i].promo_code_valid_locations.length; j += 1) {
-          if (j < 1) {
-            validLocString = outObj[i].promo_code_valid_locations[j].name;
-          } else {
-            validLocString += `${outObj[i].promo_code_valid_locations[j].name}, `;
-          }
-        }
-        outObj[i].promo_code_valid_locations = validLocString;
+        const productsArr = outObj[i].promo_code_valid_locations;
+        outObj[i].promo_code_valid_locations = productsArr.map(item => `${item.name}`).toString();
       }
       return outObj;
     },
     getProNameFromArray() {
       const outObj = this.promoCodes;
       for (let i = 0; i < outObj.length; i += 1) {
-        let validProString = '';
-        for (let j = 0; j < outObj[i].promo_code_valid_products.length; j += 1) {
-          if (j < 1) {
-            validProString = outObj[i].promo_code_valid_products[j].name;
-          } else {
-            validProString = `${outObj[i].promo_code_valid_products[j].name}, `;
-          }
-        }
-        outObj[i].promo_code_valid_products = validProString;
+        const productsArr = outObj[i].promo_code_valid_products;
+        outObj[i].promo_code_valid_products = productsArr.map(item => `${item.name}`).toString();
       }
       return outObj;
     },
