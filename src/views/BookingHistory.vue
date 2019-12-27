@@ -14,29 +14,33 @@
       <p>Name: {{ name }}</p>
       <p>Phone: {{ phone }}</p>
     </div>
+
     <v-card v-for="item in history" :key="item.id" class="mx-auto">
       <v-list>
         <v-list-group>
           <template v-slot:activator>
             <v-list-item-title class="text-left">
               <span class="booking-id">#{{ item.id }} </span>
-              <span> {{ item.bookDateTime }}</span>
+              <span> {{ formatDateTime(item.timestamp) }}</span>
             </v-list-item-title>
           </template>
 
           <div v-for="detail in item.details" :key="detail.venue" class="hist-details">
             <div class="detail-content">
-              <p>{{ detail.venue }}</p>
-              <p>{{ detail.pitch }}</p>
-              <p>{{ detail.startDateTime }} - {{ detail.endDateTime }}</p>
+              <p>{{ detail.field_name }}</p>
+              <p>{{ detail.pitch_id }}</p>
+              <p>
+                {{ formatDateTime(detail.start_time) }} - <br />
+                {{ formatDateTime(detail.end_time) }}
+              </p>
             </div>
             <div class="detail-content">
               <p class="semibold">TYPE</p>
-              <P>{{ detail.type }}</P>
+              <P>{{ detail.product_id }}</P>
             </div>
             <div class="detail-content">
               <p class="semibold">AMOUNT</p>
-              <P>${{ detail.amount }}</P>
+              <P>${{ detail.price }}</P>
             </div>
           </div>
         </v-list-group>
@@ -55,52 +59,7 @@ export default {
       phone: '',
       name: '',
 
-      history: [
-        {
-          id: '001',
-          bookDateTime: '22/10/2019 15:00',
-          details: [
-            {
-              venue: 'Kallang 05.  5-A-Side Field',
-              pitch: 'Pitch 1',
-              startDateTime: '22/10/2019 15:00',
-              endDateTime: '22/10/2019 16:00',
-              type: 'Online Premium',
-              amount: '92.00',
-            },
-            {
-              venue: 'Kallang 05.  5-A-Side Field',
-              pitch: 'Pitch 2',
-              startDateTime: '22/10/2019 15:00',
-              endDateTime: '22/10/2019 16:00',
-              type: 'Online Play More Save More Promo',
-              amount: '92.00',
-            },
-          ],
-        },
-        {
-          id: '002',
-          bookDateTime: '22/10/2019 15:00',
-          details: [
-            {
-              venue: 'Bukit timah 05.  5-A-Side Field',
-              pitch: 'Pitch 3',
-              startDateTime: '22/10/2019 15:00',
-              endDateTime: '22/10/2019 16:00',
-              type: 'Online Premium',
-              amount: '92.00',
-            },
-            {
-              venue: 'Bukit timah 05.  11-A-Side Field',
-              pitch: 'Pitch 4',
-              startDateTime: '22/10/2019 15:00',
-              endDateTime: '22/10/2019 16:00',
-              type: 'Online Play More Save More Promo',
-              amount: '92.00',
-            },
-          ],
-        },
-      ],
+      history: [],
     };
   },
   mounted() {
@@ -114,6 +73,23 @@ export default {
       .catch((err) => {
         console.log(err);
       });
+    this.$axios
+      .get(`${process.env.VUE_APP_BACKEND}bookinghistory/${this.custId}`)
+      .then((res) => {
+        this.history = res.data;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  },
+  methods: {
+    formatDateTime(obj) {
+      let outObj = obj;
+      const date = outObj.substring(0, 10);
+      const time = outObj.substring(11, 16);
+      outObj = `${date} ${time}`;
+      return outObj;
+    },
   },
 };
 </script>
