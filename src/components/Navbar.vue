@@ -59,8 +59,9 @@ export default {
   }),
   methods: {
     logout() {
-      localStorage.removeItem('user-token');
-      this.$router.go('');
+      this.$store.dispatch('logout').then(() => {
+        this.$router.push('/');
+      });
     },
   },
 };

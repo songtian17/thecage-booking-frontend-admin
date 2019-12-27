@@ -17,7 +17,7 @@ const actions = {
   login: ({ commit }, credentials) => new Promise((resolve, reject) => {
     commit('authRequest');
     axios
-      .post(`${process.env.VUE_APP_API}/signin`, credentials)
+      .post('http://localhost:3000/authentication', credentials)
       .then((resp) => {
         const { token, user } = resp.data;
         localStorage.setItem('user-token', token);
