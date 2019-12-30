@@ -228,6 +228,7 @@
                         <v-text-field
                           v-model="startTime"
                           label="Start Time"
+                          :rules="startTimeRules"
                           readonly
                           required
                           v-on="on"
@@ -258,6 +259,7 @@
                         <v-text-field
                           v-model="endTime"
                           label="End Time"
+                          :rules="endTimeRules"
                           readonly
                           required
                           v-on="on"
@@ -358,8 +360,10 @@ export default {
       addTimeDialog: false,
       startTimeMenu: false,
       startTime: '00:00',
+      startTimeRules: [v => this.isStartTimeValid(v) || "Start Time can't be after than End Time"],
       endTimeMenu: false,
       endTime: '00:00',
+      endTimeRules: [v => this.isEndTimeValid(v) || " End Time can't be before than Start Time"],
       tempTimingIndex: '',
       weekdaysAvailable: weekdays,
     };
@@ -459,6 +463,18 @@ export default {
     // add day back to the list when item deleted from array
     addToWeekdaysAvailable(day) {
       this.weekdaysAvailable.push(day);
+    },
+    isStartTimeValid(v) {
+      if (v < this.endTime) {
+        return true;
+      }
+      return false;
+    },
+    isEndTimeValid(v) {
+      if (this.startTime < v) {
+        return true;
+      }
+      return false;
     },
     deleteTiming(selectedValidDays, index) {
       const indexOfDay = this.selectedValidDays.indexOf(selectedValidDays);

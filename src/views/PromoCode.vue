@@ -17,11 +17,11 @@
         ></v-text-field>
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
-        <v-btn color="primary" dark to="/AddPromo">Add Promo Code</v-btn>
+        <v-btn v-if="isAdminAutho" color="primary" dark to="/AddPromo">Add Promo Code</v-btn>
       </v-card-title>
 
       <v-data-table :headers="headers" :items="promoCodes" :search="search">
-        <template v-slot:item.action="{ item }">
+        <template v-if="isAdminAutho" v-slot:item.action="{ item }">
           <router-link :to="`../EditPromo/${item.id}`">
             <v-icon small class="mr-2">mdi-pencil-outline</v-icon>
           </router-link>
@@ -47,6 +47,7 @@ import Confirm from '../components/ConfirmationModal.vue';
 export default {
   data() {
     return {
+      isAdminAutho: true,
       showConfirmationDialog: false,
       deletePromoId: '',
       search: '',
@@ -125,7 +126,7 @@ export default {
       const outObj = this.promoCodes;
       for (let i = 0; i < outObj.length; i += 1) {
         const productsArr = outObj[i].promo_code_valid_locations;
-        outObj[i].promo_code_valid_locations = productsArr.map(item => `${item.name}`).toString();
+        outObj[i].promo_code_valid_locations = productsArr.map(item => `${item.name}`).join(', ');
       }
       return outObj;
     },
@@ -133,7 +134,7 @@ export default {
       const outObj = this.promoCodes;
       for (let i = 0; i < outObj.length; i += 1) {
         const productsArr = outObj[i].promo_code_valid_products;
-        outObj[i].promo_code_valid_products = productsArr.map(item => `${item.name}`).toString();
+        outObj[i].promo_code_valid_products = productsArr.map(item => `${item.name}`).join(', ');
       }
       return outObj;
     },

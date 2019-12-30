@@ -165,7 +165,10 @@
 
           <div v-for="(timing, index) in selectedValidDays.timing" :key="index" class="timeWrapper">
             <div>
-              <span>{{ timing.start_time }} - {{ timing.end_time }}</span>
+              <span
+                >{{ removeSecFromTime(timing.start_time) }} -
+                {{ removeSecFromTime(timing.end_time) }}</span
+              >
               <v-icon small class="delete-icon" @click="deleteTiming(selectedValidDays, index)"
                 >mdi-delete</v-icon
               >
@@ -228,6 +231,7 @@
                         <v-text-field
                           v-model="startTime"
                           label="Start Time"
+                          :rules="startTimeRules"
                           readonly
                           required
                           v-on="on"
@@ -257,6 +261,7 @@
                       <template v-slot:activator="{ on }">
                         <v-text-field
                           v-model="endTime"
+                          :rules="endTimeRules"
                           label="End Time"
                           readonly
                           required
@@ -342,12 +347,16 @@ export default {
       discountRules: [v => !!v || 'Discount is required'],
       selectedValidProducts: '',
       validProducts: [],
-      productsRules: [v => !!v || 'Valid Product is required',
-        v => v.length !== 0 || 'Valid Product is required'],
+      productsRules: [
+        v => !!v || 'Valid Product is required',
+        v => v.length !== 0 || 'Valid Product is required',
+      ],
       selectedValidVenues: '',
       validVenues: [],
-      venuesRules: [v => !!v || 'Valid Venue is required',
-        v => v.length !== 0 || 'Valid Venue is required'],
+      venuesRules: [
+        v => !!v || 'Valid Venue is required',
+        v => v.length !== 0 || 'Valid Venue is required',
+      ],
 
       editTimingDialog: false,
       selectedValidDays: [],
@@ -359,8 +368,10 @@ export default {
       addTimeDialog: false,
       startTimeMenu: false,
       startTime: '00:00',
+      startTimeRules: [v => this.isStartTimeValid(v) || "Start Time can't be after than End Time"],
       endTimeMenu: false,
       endTime: '00:00',
+      endTimeRules: [v => this.isEndTimeValid(v) || " End Time can't be before than Start Time"],
       tempTimingIndex: '',
       weekdaysAvailable: weekdays,
     };
@@ -487,6 +498,18 @@ export default {
     addToWeekdaysAvailable(day) {
       this.weekdaysAvailable.push(day);
     },
+    isStartTimeValid(v) {
+      if (v < this.endTime) {
+        return true;
+      }
+      return false;
+    },
+    isEndTimeValid(v) {
+      if (this.startTime < v) {
+        return true;
+      }
+      return false;
+    },
     deleteTiming(selectedValidDays, index) {
       const indexOfDay = this.selectedValidDays.indexOf(selectedValidDays);
       this.selectedValidDays[indexOfDay].timing.splice(index, 1);
@@ -548,6 +571,9 @@ export default {
         return;
       }
       this.weekdaysAvailable = arr;
+    },
+    removeSecFromTime(time) {
+      return time.substring(0, 5);
     },
   },
   watch: {
