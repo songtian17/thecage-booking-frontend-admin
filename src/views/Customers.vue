@@ -25,10 +25,19 @@
         @click:row="redirectBookHist"
       ></v-data-table>
     </v-card>
+
+        <error
+      :showDialog="showErrorDialog"
+      :msg="errMsg"
+      @close="showErrorDialog = false"
+    ></error>
+
   </div>
 </template>
 
 <script>
+import Error from '../components/ErrorModal.vue';
+
 export default {
   data() {
     return {
@@ -45,12 +54,17 @@ export default {
         { text: 'Phone', value: 'phone_no' },
       ],
       customers: [],
+      showErrorDialog: false,
+      errMsg: '',
     };
   },
   methods: {
     redirectBookHist(row) {
       this.$router.push(`/BookingHistory/${row.id}`);
     },
+  },
+  components: {
+    Error,
   },
   mounted() {
     this.$axios
@@ -60,7 +74,8 @@ export default {
         this.customers = res.data;
       })
       .catch((err) => {
-        console.log(err);
+        this.errMsg = err;
+        this.showErrorDialog = true;
       });
   },
 };

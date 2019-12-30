@@ -230,10 +230,17 @@
       "
       @cancel="confirmDeleteTimeslotDialog = false"
     ></confirm>
+
+        <error
+      :showDialog="showErrorDialog"
+      :msg="errMsg"
+      @close="showErrorDialog = false"
+    ></error>
   </div>
 </template>
 
 <script>
+import Error from '../components/ErrorModal.vue';
 import Confirm from '../components/ConfirmationModal.vue';
 
 export default {
@@ -316,11 +323,13 @@ export default {
       startTimeRules: [v => !!v || 'Start Time is required'],
       duration: '',
       durationRules: [v => !!v || 'Duration is required'],
+      showErrorDialog: false,
+      errMsg: '',
     };
   },
 
   components: {
-    Confirm,
+    Confirm, Error,
   },
 
   mounted() {
@@ -332,10 +341,10 @@ export default {
         this.numOfPitches = res.data.num_pitches;
         this.selectedFieldType = res.data.field_type;
         this.hex = res.data.colour;
-        console.log(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        this.errMsg = err;
+        this.showErrorDialog = true;
       });
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND}pitches/${this.fieldId}`)
@@ -343,7 +352,8 @@ export default {
         this.pitches = res.data;
       })
       .catch((err) => {
-        console.log(err);
+        this.errMsg = err;
+        this.showErrorDialog = true;
       });
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND}customtimeslots/${this.fieldId}`)
@@ -352,7 +362,8 @@ export default {
         this.timeslots = res.data;
       })
       .catch((err) => {
-        console.log(err);
+        this.errMsg = err;
+        this.showErrorDialog = true;
       });
   },
 
@@ -370,9 +381,12 @@ export default {
           };
           this.$axios
             .put(`${process.env.VUE_APP_BACKEND}field/${this.fieldId}`, data)
-            .then(() => {})
+            .then(() => {
+              this.$router.go();
+            })
             .catch((err) => {
-              console.log(err);
+              this.errMsg = err.response.data.message;
+              this.showErrorDialog = true;
             });
         }
       }
@@ -396,7 +410,8 @@ export default {
             this.$router.go();
           })
           .catch((err) => {
-            console.log(err);
+            this.errMsg = err;
+            this.showErrorDialog = true;
           });
       }
     },
@@ -413,7 +428,8 @@ export default {
             this.$router.go();
           })
           .catch((err) => {
-            console.log(err);
+            this.errMsg = err;
+            this.showErrorDialog = true;
           });
       }
     },
@@ -428,7 +444,8 @@ export default {
           this.$router.go();
         })
         .catch((err) => {
-          console.log(err);
+          this.errMsg = err;
+          this.showErrorDialog = true;
         });
     },
     closeAddTimeslot() {
@@ -448,7 +465,8 @@ export default {
             this.$router.go();
           })
           .catch((err) => {
-            console.log(err);
+            this.errMsg = err;
+            this.showErrorDialog = true;
           });
       }
     },
@@ -463,7 +481,8 @@ export default {
           this.$router.go();
         })
         .catch((err) => {
-          console.log(err);
+          this.errMsg = err;
+          this.showErrorDialog = true;
         });
     },
     // eslint-disable-next-line consistent-return

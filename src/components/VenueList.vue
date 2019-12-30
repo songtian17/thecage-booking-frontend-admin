@@ -61,10 +61,13 @@
       "
       @cancel="confirmDeleteFieldDialog = false"
     ></confirm>
+
+    <error :showDialog="showErrorDialog" :msg="errMsg" @close="showErrorDialog = false"></error>
   </div>
 </template>
 
 <script>
+import Error from './ErrorModal.vue';
 import Confirm from './ConfirmationModal.vue';
 
 export default {
@@ -91,9 +94,12 @@ export default {
       { text: '', value: 'data-table-expand', width: '24px' },
     ],
     venues: [],
+    showErrorDialog: false,
+    errMsg: '',
   }),
   components: {
     Confirm,
+    Error,
   },
 
   mounted() {
@@ -104,7 +110,8 @@ export default {
         this.venues = res.data;
       })
       .catch((err) => {
-        console.log(err);
+        this.errMsg = err;
+        this.showErrorDialog = true;
       });
   },
 
@@ -117,7 +124,8 @@ export default {
           this.$router.go('/venue');
         })
         .catch((err) => {
-          console.log(err);
+          this.errMsg = err;
+          this.showErrorDialog = true;
         });
     },
     getVenueId(item) {
@@ -132,7 +140,8 @@ export default {
           this.$router.go('/venue');
         })
         .catch((err) => {
-          console.log(err);
+          this.errMsg = err;
+          this.showErrorDialog = true;
         });
     },
     getFieldId(item) {

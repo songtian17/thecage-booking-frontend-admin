@@ -19,16 +19,24 @@
       </v-container>
     </v-form>
 
+    <error
+      :showDialog="showErrorDialog"
+      :msg="errMsg"
+      @close="showErrorDialog = false"
+    ></error>
 
   </div>
 </template>
 
 <script>
+import Error from '../components/ErrorModal.vue';
 
 export default {
   data: () => ({
     isFormValid: false,
     venueName: '',
+    showErrorDialog: false,
+    errMsg: '',
     nameRules: [v => !!v || 'Venue Name is required'],
   }),
   methods: {
@@ -38,16 +46,19 @@ export default {
           const data = { name: this.venueName };
           this.$axios
             .post(`${process.env.VUE_APP_BACKEND}venue`, data)
-            .then((res) => {
-              console.log(res);
-              this.$router.push('/Venue');
+            .then(() => {
+              this.$router.go(-1);
             })
             .catch((err) => {
-              console.log(err);
+              this.errMsg = err.response.data.message;
+              this.showErrorDialog = true;
             });
         }
       }
     },
+  },
+  components: {
+    Error,
   },
 };
 </script>

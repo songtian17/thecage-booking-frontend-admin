@@ -82,10 +82,13 @@
         <v-btn class="mr-4" color="primary" @click="submit">save changes</v-btn>
       </v-container>
     </v-form>
+        <error :showDialog="showErrorDialog" :msg="errMsg" @close="showErrorDialog = false"></error>
   </div>
 </template>
 
 <script>
+import Error from '../components/ErrorModal.vue';
+
 export default {
   data() {
     return {
@@ -102,6 +105,8 @@ export default {
       discount: '',
       discountRules: [v => !!v || 'Discount is required'],
       isActive: false,
+      showErrorDialog: false,
+      errMsg: '',
     };
   },
   mounted() {
@@ -116,7 +121,8 @@ export default {
         this.isActive = res.data.status;
       })
       .catch((err) => {
-        console.log(err);
+        this.errMsg = err;
+        this.showErrorDialog = true;
       });
   },
   methods: {
@@ -137,11 +143,15 @@ export default {
               this.$router.go();
             })
             .catch((err) => {
-              console.log(err);
+              this.errMsg = err;
+              this.showErrorDialog = true;
             });
         }
       }
     },
+  },
+  components: {
+    Error,
   },
 };
 </script>

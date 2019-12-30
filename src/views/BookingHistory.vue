@@ -46,10 +46,19 @@
         </v-list-group>
       </v-list>
     </v-card>
+
+        <error
+      :showDialog="showErrorDialog"
+      :msg="errMsg"
+      @close="showErrorDialog = false"
+    ></error>
+
   </div>
 </template>
 
 <script>
+import Error from '../components/ErrorModal.vue';
+
 export default {
   data() {
     return {
@@ -58,6 +67,8 @@ export default {
       email: '',
       phone: '',
       name: '',
+      showErrorDialog: false,
+      errMsg: '',
 
       history: [],
     };
@@ -71,7 +82,8 @@ export default {
         this.phone = res.data.phone_no;
       })
       .catch((err) => {
-        console.log(err);
+        this.errMsg = err;
+        this.showErrorDialog = true;
       });
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND}bookinghistory/${this.custId}`)
@@ -79,8 +91,12 @@ export default {
         this.history = res.data;
       })
       .catch((err) => {
-        console.log(err);
+        this.errMsg = err;
+        this.showErrorDialog = true;
       });
+  },
+  components: {
+    Error,
   },
   methods: {
     formatDateTime(obj) {

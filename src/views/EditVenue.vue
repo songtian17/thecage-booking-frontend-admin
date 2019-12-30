@@ -20,12 +20,7 @@
     </v-form>
     <br />
     <br />
-    <v-data-table
-      :headers="headers"
-      :items="fields"
-      item-key="name"
-      class="elevation-1"
-    >
+    <v-data-table :headers="headers" :items="fields" item-key="name" class="elevation-1">
       <template v-slot:top>
         <v-toolbar flat color="white">
           <v-toolbar-title>Fields</v-toolbar-title>
@@ -52,10 +47,13 @@
       "
       @cancel="showConfirmationDialog = false"
     ></confirm>
+
+    <error :showDialog="showErrorDialog" :msg="errMsg" @close="showErrorDialog = false"></error>
   </div>
 </template>
 
 <script>
+import Error from '../components/ErrorModal.vue';
 import Confirm from '../components/ConfirmationModal.vue';
 
 export default {
@@ -93,10 +91,13 @@ export default {
           sortable: false,
         },
       ],
+      showErrorDialog: false,
+      errMsg: '',
     };
   },
   components: {
     Confirm,
+    Error,
   },
   methods: {
     submit() {
@@ -105,11 +106,12 @@ export default {
           const data = { name: this.venueName };
           this.$axios
             .put(`${process.env.VUE_APP_BACKEND}venue/${this.venueId}`, data)
-            .then((res) => {
-              console.log(res);
+            .then(() => {
+              this.$router.go();
             })
             .catch((err) => {
-              console.log(err);
+              this.errMsg = err.response.data.message;
+              this.showErrorDialog = true;
             });
         }
       }
@@ -117,12 +119,12 @@ export default {
     deleteField() {
       this.$axios
         .delete(`${process.env.VUE_APP_BACKEND}field/${this.deleteFieldId}`)
-        .then((res) => {
-          console.log(res);
+        .then(() => {
           this.$router.go();
         })
         .catch((err) => {
-          console.log(err);
+          this.errMsg = err;
+          this.showErrorDialog = true;
         });
     },
     getFieldId(item) {
@@ -138,7 +140,8 @@ export default {
         this.fields = res.data.fields;
       })
       .catch((err) => {
-        console.log(err);
+        this.errMsg = err;
+        this.showErrorDialog = true;
       });
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND}fields/${this.venueId}`)
@@ -146,7 +149,8 @@ export default {
         this.fields = res.data;
       })
       .catch((err) => {
-        console.log(err);
+        this.errMsg = err;
+        this.showErrorDialog = true;
       });
   },
 };

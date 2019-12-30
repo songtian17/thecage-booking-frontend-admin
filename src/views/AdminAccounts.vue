@@ -37,16 +37,20 @@
       "
       @cancel="showConfirmationDialog = false"
     ></confirm>
+
+    <error :showDialog="showErrorDialog" :msg="errMsg" @close="showErrorDialog = false"></error>
   </div>
 </template>
 
 <script>
+import Error from '../components/ErrorModal.vue';
 import Confirm from '../components/ConfirmationModal.vue';
-
 
 export default {
   data: () => ({
     showConfirmationDialog: false,
+    showErrorDialog: false,
+    errMsg: '',
     deleteAdminId: '',
     headers: [
       {
@@ -67,6 +71,7 @@ export default {
   }),
   components: {
     Confirm,
+    Error,
   },
 
   mounted() {
@@ -77,7 +82,8 @@ export default {
         this.venues = res.data;
       })
       .catch((err) => {
-        console.log(err);
+        this.errMsg = err;
+        this.showErrorDialog = true;
       });
   },
 
@@ -90,7 +96,8 @@ export default {
           this.$router.go('/AdminAccounts');
         })
         .catch((err) => {
-          console.log(err);
+          this.errMsg = err;
+          this.showErrorDialog = true;
         });
     },
     getAdminId(item) {

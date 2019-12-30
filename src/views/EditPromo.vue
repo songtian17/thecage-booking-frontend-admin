@@ -311,10 +311,14 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <error :showDialog="showErrorDialog" :msg="errMsg" @close="showErrorDialog = false"></error>
   </div>
 </template>
 
 <script>
+import Error from '../components/ErrorModal.vue';
+
 const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 export default {
@@ -374,13 +378,17 @@ export default {
       endTimeRules: [v => this.isEndTimeValid(v) || " End Time can't be before than Start Time"],
       tempTimingIndex: '',
       weekdaysAvailable: weekdays,
+      showErrorDialog: false,
+      errMsg: '',
     };
+  },
+  components: {
+    Error,
   },
   mounted() {
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND}promotioncode/${this.promoId}`)
       .then((res) => {
-        console.log(res.data);
         this.promoName = res.data.code;
         this.startDate = res.data.valid_from.substring(0, 10);
         this.endDate = res.data.valid_to.substring(0, 10);
@@ -392,16 +400,17 @@ export default {
         this.selectedValidVenues = this.getNameFromArray(res.data.promo_code_valid_locations);
       })
       .catch((err) => {
-        console.log(err);
+        this.errMsg = err;
+        this.showErrorDialog = true;
       });
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND}validtimings/${this.promoId}`)
       .then((res) => {
         this.selectedValidDays = res.data;
-        console.log(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        this.errMsg = err;
+        this.showErrorDialog = true;
       });
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND}products`)
@@ -409,7 +418,8 @@ export default {
         this.validProducts = this.getNameFromArray(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        this.errMsg = err;
+        this.showErrorDialog = true;
       });
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND}venues`)
@@ -417,7 +427,8 @@ export default {
         this.validVenues = this.getNameFromArray(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        this.errMsg = err;
+        this.showErrorDialog = true;
       });
     this.checkIfValidTiming();
   },
@@ -452,7 +463,8 @@ export default {
               this.$router.go();
             })
             .catch((err) => {
-              console.log(err);
+              this.errMsg = err.response.data.message;
+              this.showErrorDialog = true;
             });
         }
       }

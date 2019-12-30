@@ -38,10 +38,13 @@
       "
       @cancel="showConfirmationDialog = false"
     ></confirm>
+
+    <error :showDialog="showErrorDialog" :msg="errMsg" @close="showErrorDialog = false"></error>
   </div>
 </template>
 
 <script>
+import Error from '../components/ErrorModal.vue';
 import Confirm from '../components/ConfirmationModal.vue';
 
 export default {
@@ -78,10 +81,13 @@ export default {
         },
       ],
       promoCodes: [],
+      showErrorDialog: false,
+      errMsg: '',
     };
   },
   components: {
     Confirm,
+    Error,
   },
   mounted() {
     this.$axios
@@ -93,7 +99,8 @@ export default {
         this.getLocNameFromArray();
       })
       .catch((err) => {
-        console.log(err);
+        this.errMsg = err;
+        this.showErrorDialog = true;
       });
   },
   methods: {
@@ -104,7 +111,8 @@ export default {
           this.$router.go();
         })
         .catch((err) => {
-          console.log(err);
+          this.errMsg = err;
+          this.showErrorDialog = true;
         });
     },
     getPromoId(item) {

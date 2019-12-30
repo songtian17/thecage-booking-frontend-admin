@@ -308,10 +308,18 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+        <error
+      :showDialog="showErrorDialog"
+      :msg="errMsg"
+      @close="showErrorDialog = false"
+    ></error>
   </div>
 </template>
 
 <script>
+import Error from '../components/ErrorModal.vue';
+
 const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 export default {
@@ -366,7 +374,12 @@ export default {
       endTimeRules: [v => this.isEndTimeValid(v) || " End Time can't be before than Start Time"],
       tempTimingIndex: '',
       weekdaysAvailable: weekdays,
+      showErrorDialog: false,
+      errMsg: '',
     };
+  },
+  components: {
+    Error,
   },
   mounted() {
     this.$axios
@@ -375,7 +388,8 @@ export default {
         this.validProducts = this.getNameFromArray(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        this.errMsg = err;
+        this.showErrorDialog = true;
       });
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND}venues`)
@@ -383,7 +397,8 @@ export default {
         this.validVenues = this.getNameFromArray(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        this.errMsg = err;
+        this.showErrorDialog = true;
       });
     this.checkIfValidTiming();
   },
@@ -418,7 +433,8 @@ export default {
               this.$router.go(-1);
             })
             .catch((err) => {
-              console.log(err);
+              this.errMsg = err.response.data.message;
+              this.showErrorDialog = true;
             });
         }
       }

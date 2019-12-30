@@ -51,10 +51,19 @@
       </v-tabs>
     </div>
     <v-btn class="mr-4" color="primary" style="float:right;" @click="submit">save changes</v-btn>
+
+        <error
+      :showDialog="showErrorDialog"
+      :msg="errMsg"
+      @close="showErrorDialog = false"
+    ></error>
+
   </div>
 </template>
 
 <script>
+import Error from '../components/ErrorModal.vue';
+
 const marked = require('marked');
 
 export default {
@@ -64,6 +73,8 @@ export default {
       isTopVisible: true,
       isBotVisible: true,
       botText: '',
+      showErrorDialog: false,
+      errMsg: '',
     };
   },
   computed: {
@@ -105,6 +116,9 @@ export default {
       },
     },
   },
+  components: {
+    Error,
+  },
   methods: {
     submit() {
       const topData = {
@@ -119,7 +133,8 @@ export default {
           this.$router.go();
         })
         .catch((err) => {
-          console.log(err);
+          this.errMsg = err;
+          this.showErrorDialog = true;
         });
       const botData = {
         markdownString: this.botText,
@@ -133,7 +148,8 @@ export default {
           this.$router.go();
         })
         .catch((err) => {
-          console.log(err);
+          this.errMsg = err;
+          this.showErrorDialog = true;
         });
     },
   },
@@ -146,7 +162,8 @@ export default {
         this.previewTopText = res.data.html_string;
       })
       .catch((err) => {
-        console.log(err);
+        this.errMsg = err;
+        this.showErrorDialog = true;
       });
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND}announcement/2`)
@@ -156,7 +173,8 @@ export default {
         this.previewBotText = res.data.html_string;
       })
       .catch((err) => {
-        console.log(err);
+        this.errMsg = err;
+        this.showErrorDialog = true;
       });
   },
 };

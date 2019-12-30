@@ -20,13 +20,19 @@
         <v-btn color="primary" class="mr-4" @click="submit">Add </v-btn>
       </v-container>
     </v-form>
+
+    <error :showDialog="showErrorDialog" :msg="errMsg" @close="showErrorDialog = false"></error>
   </div>
 </template>
 
 <script>
+import Error from '../components/ErrorModal.vue';
+
 export default {
   data: () => ({
     isFormValid: false,
+    showErrorDialog: false,
+    errMsg: '',
     adminId: '',
     password: '',
     nameRules: [v => !!v || 'ID is required'],
@@ -37,19 +43,24 @@ export default {
       if (this.$refs.form.validate()) {
         if (this.adminId !== '' && this.password !== '') {
           const data = {
-            user_id: this.adminId, password: this.password, role: 'admin',
+            user_id: this.adminId,
+            password: this.password,
+            role: 'admin',
           };
           this.$axios
             .post(`${process.env.VUE_APP_BACKEND}admin`, data)
-            .then((res) => {
-              console.log(res);
-              this.$router.push('AdminAccounts');
+            .then(() => {
+              this.$router.go(-1);
             })
             .catch((err) => {
-              console.log(err);
+              this.errMsg = err.response.data.message;
+              this.showErrorDialog = true;
             });
         }
       }
+    },
+    components: {
+      Error,
     },
   },
 };

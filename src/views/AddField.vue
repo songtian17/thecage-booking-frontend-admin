@@ -62,16 +62,25 @@
       msg="Do remember to add Odoo ID for every pitches."
       @close="close()"
     ></notification>
+
+        <error
+      :showDialog="showErrorDialog"
+      :msg="errMsg"
+      @close="showErrorDialog = false"
+    ></error>
   </div>
 </template>
 
 <script>
+import Error from '../components/ErrorModal.vue';
 import Notification from '../components/NotiModal.vue';
 
 export default {
   data() {
     return {
       showNotiDialog: false,
+      showErrorDialog: false,
+      errMsg: '',
       venueId: this.$route.params.id,
       odooId: '',
       odooIdRules: [v => !!v || 'Odoo Id is required'],
@@ -92,7 +101,7 @@ export default {
     };
   },
   components: {
-    Notification,
+    Notification, Error,
   },
   methods: {
     submit() {
@@ -107,12 +116,12 @@ export default {
           };
           this.$axios
             .post(`${process.env.VUE_APP_BACKEND}field/${this.venueId}`, data)
-            .then((res) => {
-              console.log(res);
+            .then(() => {
               this.showNotiDialog = true;
             })
             .catch((err) => {
-              console.log(err);
+              this.errMsg = err.response.data.message;
+              this.showErrorDialog = true;
             });
         }
       }
