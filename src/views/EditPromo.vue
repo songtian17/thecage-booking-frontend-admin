@@ -121,7 +121,7 @@
         >
         <br />
         <br />
-        <v-btn class="mr-4" color="primary" @click="submit">Add</v-btn>
+        <v-btn class="mr-4" color="primary" @click="submit">Save changes</v-btn>
       </v-container>
     </v-form>
 
@@ -141,13 +141,13 @@
           class="timingTable"
         >
           <div class="dayWrapper">
-            <span>{{ selectedValidDays.day }} </span>
+            <span>{{ selectedValidDays.day_of_week }} </span>
             <v-icon
               small
               class="delete-icon"
               @click="
                 deleteDay(index);
-                addToWeekdaysAvailable(selectedValidDays.day);
+                addToWeekdaysAvailable(selectedValidDays.day_of_week);
               "
               >mdi-delete</v-icon
             >
@@ -165,7 +165,7 @@
 
           <div v-for="(timing, index) in selectedValidDays.timing" :key="index" class="timeWrapper">
             <div>
-              <span>{{ timing.startTime }} - {{ timing.endTime }}</span>
+              <span>{{ timing.start_time }} - {{ timing.end_time }}</span>
               <v-icon small class="delete-icon" @click="deleteTiming(selectedValidDays, index)"
                 >mdi-delete</v-icon
               >
@@ -342,10 +342,12 @@ export default {
       discountRules: [v => !!v || 'Discount is required'],
       selectedValidProducts: '',
       validProducts: [],
-      productsRules: [v => !!v || 'Valid Product is required'],
+      productsRules: [v => !!v || 'Valid Product is required',
+        v => v.length !== 0 || 'Valid Product is required'],
       selectedValidVenues: '',
       validVenues: [],
-      venuesRules: [v => !!v || 'Valid Venues is required'],
+      venuesRules: [v => !!v || 'Valid Venue is required',
+        v => v.length !== 0 || 'Valid Venue is required'],
 
       editTimingDialog: false,
       selectedValidDays: [],
@@ -382,6 +384,15 @@ export default {
         console.log(err);
       });
     this.$axios
+      .get(`${process.env.VUE_APP_BACKEND}validtimings/${this.promoId}`)
+      .then((res) => {
+        this.selectedValidDays = res.data;
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    this.$axios
       .get(`${process.env.VUE_APP_BACKEND}products`)
       .then((res) => {
         this.validProducts = this.getNameFromArray(res.data);
@@ -408,8 +419,8 @@ export default {
           && this.usePerUser !== ''
           && this.selectedDiscountType !== ''
           && this.discount !== ''
-          && this.selectedValidProducts !== ''
-          && this.selectedValidVenues !== ''
+          && this.selectedValidProducts.length !== 0
+          && this.selectedValidVenues.length !== 0
         ) {
           const data = {
             code: this.promoName,
@@ -427,7 +438,7 @@ export default {
           this.$axios
             .put(`${process.env.VUE_APP_BACKEND}promotioncode/${this.promoId}`, data)
             .then(() => {
-              this.$router.go(-1);
+              this.$router.go();
             })
             .catch((err) => {
               console.log(err);
@@ -484,7 +495,7 @@ export default {
       // click thursday, then click add
       if (this.selectedDay) {
         this.selectedValidDays.push({
-          day: this.selectedDay,
+          day_of_week: this.selectedDay,
           timing: [],
         });
         this.weekdaysAvailable = this.weekdaysAvailable.filter(e => e !== this.selectedDay);
@@ -493,8 +504,8 @@ export default {
     },
     addTime() {
       this.selectedValidDays[this.tempTimingIndex].timing.push({
-        startTime: this.startTime,
-        endTime: this.endTime,
+        start_time: this.startTime,
+        end_time: this.endTime,
       });
       this.addTimeDialog = false;
     },
@@ -531,7 +542,9 @@ export default {
         arr.push(this.getDayOfWeek(new Date(startDate)));
       }
       if (this.selectedValidDays.length) {
-        this.weekdaysAvailable = arr.filter(e => !this.selectedValidDays.find(el => el.day === e));
+        this.weekdaysAvailable = arr.filter(
+          e => !this.selectedValidDays.find(el => el.day_of_week === e),
+        );
         return;
       }
       this.weekdaysAvailable = arr;

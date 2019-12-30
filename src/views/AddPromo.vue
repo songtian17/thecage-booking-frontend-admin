@@ -341,10 +341,12 @@ export default {
       discountRules: [v => !!v || 'Discount is required'],
       selectedValidProducts: '',
       validProducts: [],
-      productsRules: [v => !!v || 'Valid Product is required'],
+      productsRules: [v => !!v || 'Valid Product is required',
+        v => v.length !== 0 || 'Valid Product is required'],
       selectedValidVenues: '',
       validVenues: [],
-      venuesRules: [v => !!v || 'Valid Venues is required'],
+      venuesRules: [v => !!v || 'Valid Venue is required',
+        v => v.length !== 0 || 'Valid Venue is required'],
 
       editTimingDialog: false,
       selectedValidDays: [],
@@ -390,8 +392,8 @@ export default {
           && this.usePerUser !== ''
           && this.selectedDiscountType !== ''
           && this.discount !== ''
-          && this.selectedValidProducts !== ''
-          && this.selectedValidVenues !== ''
+          && this.selectedValidProducts.length !== 0
+          && this.selectedValidVenues.length !== 0
         ) {
           const data = {
             code: this.promoName,
