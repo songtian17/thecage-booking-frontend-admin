@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import error from '../components/ErrorModal.vue';
+import Error from '../components/ErrorModal.vue';
 
 export default {
   data() {
@@ -85,7 +85,7 @@ export default {
     source: String,
   },
   components: {
-    error,
+    Error,
   },
 };
 </script>
