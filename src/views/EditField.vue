@@ -231,11 +231,7 @@
       @cancel="confirmDeleteTimeslotDialog = false"
     ></confirm>
 
-        <error
-      :showDialog="showErrorDialog"
-      :msg="errMsg"
-      @close="showErrorDialog = false"
-    ></error>
+    <error :showDialog="showErrorDialog" :msg="errMsg" @close="showErrorDialog = false"></error>
   </div>
 </template>
 
@@ -322,14 +318,19 @@ export default {
       startTime: '00:00',
       startTimeRules: [v => !!v || 'Start Time is required'],
       duration: '',
-      durationRules: [v => !!v || 'Duration is required'],
+      durationRules: [
+        v => !!v || 'Duration is required',
+        v => v > 1 || 'Duration can be set to either 2 and 3 only',
+        v => v < 4 || 'Duration can be set to either 2 and 3 only',
+      ],
       showErrorDialog: false,
       errMsg: '',
     };
   },
 
   components: {
-    Confirm, Error,
+    Confirm,
+    Error,
   },
 
   mounted() {
