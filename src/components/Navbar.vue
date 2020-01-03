@@ -2,7 +2,7 @@
   <div>
     <v-navigation-drawer v-model="drawer" app>
       <v-list dense>
-        <v-list-item link to="/Venue">
+        <v-list-item v-if="isAdminAutho" link to="/Venue">
           <v-list-item-content>
             <v-list-item-title>Venue and Fields</v-list-item-title>
           </v-list-item-content>
@@ -12,7 +12,7 @@
             <v-list-item-title>Promotion Code</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link to="/Announcement">
+        <v-list-item v-if="isAdminAutho" link to="/Announcement">
           <v-list-item-content>
             <v-list-item-title>Announcement</v-list-item-title>
           </v-list-item-content>
@@ -22,12 +22,12 @@
             <v-list-item-title>Customers</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link to="/EditTimingDiscount">
+        <v-list-item v-if="isAdminAutho" link to="/EditTimingDiscount">
           <v-list-item-content>
             <v-list-item-title>Timing Discounts</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link to="/AdminAccounts">
+        <v-list-item v-if="isAdminAutho" link to="/AdminAccounts">
           <v-list-item-content>
             <v-list-item-title>Admin Accounts</v-list-item-title>
           </v-list-item-content>
@@ -56,6 +56,7 @@ export default {
   name: 'Navbar',
   data: () => ({
     drawer: null,
+    isAdminAutho: true,
   }),
   methods: {
     logout() {
