@@ -144,7 +144,7 @@ export default {
         this.showErrorDialog = true;
       });
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}fields/${this.venueId}`)
+      .get(`${process.env.VUE_APP_BACKEND}venues/${this.venueId}`)
       .then((res) => {
         this.fields = res.data;
       })

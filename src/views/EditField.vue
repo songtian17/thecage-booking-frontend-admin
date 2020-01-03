@@ -342,15 +342,7 @@ export default {
         this.numOfPitches = res.data.num_pitches;
         this.selectedFieldType = res.data.field_type;
         this.hex = res.data.colour;
-      })
-      .catch((err) => {
-        this.errMsg = err;
-        this.showErrorDialog = true;
-      });
-    this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}pitches/${this.fieldId}`)
-      .then((res) => {
-        this.pitches = res.data;
+        this.pitches = res.data.pitches;
       })
       .catch((err) => {
         this.errMsg = err;
