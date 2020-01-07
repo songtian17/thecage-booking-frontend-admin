@@ -50,7 +50,7 @@ import Confirm from '../components/ConfirmationModal.vue';
 export default {
   data() {
     return {
-      isAdminAutho: true,
+      isAdminAutho: false,
       showConfirmationDialog: false,
       deletePromoId: '',
       search: '',
@@ -102,6 +102,13 @@ export default {
         this.errMsg = err;
         this.showErrorDialog = true;
       });
+
+    const role = localStorage.getItem('role');
+    if (role === 'Admin') {
+      this.isAdminAutho = false;
+    } else {
+      this.isAdminAutho = true;
+    }
   },
   methods: {
     deletePromo() {

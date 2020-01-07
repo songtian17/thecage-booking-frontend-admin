@@ -49,7 +49,7 @@
     </v-content>
     <error
       :showDialog="showErrorDialog"
-      msg="The crendential that you've entered is incorrect. Please try again."
+      :msg="msg"
       @close="showErrorDialog = false"
     ></error>
   </v-app>
@@ -63,6 +63,7 @@ export default {
     return {
       id: '',
       password: '',
+      msg: '',
       showErrorDialog: false,
       IDRules: [v => !!v || 'ID is required'],
       PwdRules: [v => !!v || 'Password is required'],
@@ -72,9 +73,10 @@ export default {
     login() {
       if (this.$refs.form.validate()) {
         if (this.id !== '' && this.password !== '') {
-          this.$store.dispatch('login', { id: this.id, password: this.password }).then(() => {
+          this.$store.dispatch('login', { userId: this.id, password: this.password }).then(() => {
             this.$router.go('/Venue');
           }).catch(() => {
+            this.msg = 'Sorry, your credential was incorrect. Please double-check your credential.';
             this.showErrorDialog = true;
           });
         }

@@ -45,7 +45,7 @@ export default {
     submit() {
       if (this.$refs.form.validate()) {
         if (this.adminId !== '' && this.password !== '') {
-          const data = { id: this.id, user_id: this.adminId, password: this.password };
+          const data = { userId: this.adminId, password: this.password };
           this.$axios
             .put(`${process.env.VUE_APP_BACKEND}admin/${this.id}`, data)
             .then(() => {
