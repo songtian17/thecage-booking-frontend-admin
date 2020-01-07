@@ -78,7 +78,6 @@ export default {
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND}admin`)
       .then((res) => {
-        console.log(res.data);
         this.venues = res.data;
       })
       .catch((err) => {
@@ -91,8 +90,7 @@ export default {
     deleteAdmin() {
       this.$axios
         .delete(`${process.env.VUE_APP_BACKEND}admin/${this.deleteAdminId}`)
-        .then((res) => {
-          console.log(res);
+        .then(() => {
           this.$router.go('/AdminAccounts');
         })
         .catch((err) => {

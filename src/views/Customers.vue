@@ -70,7 +70,6 @@ export default {
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND}customer`)
       .then((res) => {
-        console.log(res.data);
         this.customers = res.data;
       })
       .catch((err) => {

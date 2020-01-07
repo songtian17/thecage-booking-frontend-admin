@@ -106,7 +106,6 @@ export default {
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND}venues`)
       .then((res) => {
-        console.log(res.data);
         this.venues = res.data;
       })
       .catch((err) => {
@@ -119,8 +118,7 @@ export default {
     deleteVenue() {
       this.$axios
         .delete(`${process.env.VUE_APP_BACKEND}venue/${this.deleteVenueId}`)
-        .then((res) => {
-          console.log(res);
+        .then(() => {
           this.$router.go('/venue');
         })
         .catch((err) => {
@@ -135,8 +133,7 @@ export default {
     deleteField() {
       this.$axios
         .delete(`${process.env.VUE_APP_BACKEND}field/${this.deleteFieldId}`)
-        .then((res) => {
-          console.log(res);
+        .then(() => {
           this.$router.go('/venue');
         })
         .catch((err) => {

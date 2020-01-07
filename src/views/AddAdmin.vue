@@ -29,15 +29,17 @@
 import Error from '../components/ErrorModal.vue';
 
 export default {
-  data: () => ({
-    isFormValid: false,
-    showErrorDialog: false,
-    errMsg: '',
-    adminId: '',
-    password: '',
-    nameRules: [v => !!v || 'ID is required'],
-    pwdRules: [v => !!v || 'Password is required'],
-  }),
+  data() {
+    return {
+      isFormValid: false,
+      showErrorDialog: false,
+      errMsg: '',
+      adminId: '',
+      password: '',
+      nameRules: [v => !!v || 'ID is required'],
+      pwdRules: [v => !!v || 'Password is required'],
+    };
+  },
   methods: {
     submit() {
       if (this.$refs.form.validate()) {
@@ -45,7 +47,6 @@ export default {
           const data = {
             user_id: this.adminId,
             password: this.password,
-            role: 'admin',
           };
           this.$axios
             .post(`${process.env.VUE_APP_BACKEND}admin`, data)
@@ -59,9 +60,9 @@ export default {
         }
       }
     },
-    components: {
-      Error,
-    },
+  },
+  components: {
+    Error,
   },
 };
 </script>

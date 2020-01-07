@@ -113,7 +113,6 @@ export default {
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND}discount/1`)
       .then((res) => {
-        console.log(res.data);
         this.startTime = res.data.start_time.substring(0, 5);
         this.endTime = res.data.end_time.substring(0, 5);
         this.selectedDiscountType = res.data.discount_type;
