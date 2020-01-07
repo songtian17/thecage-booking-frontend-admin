@@ -26,6 +26,7 @@ import AccSettings from '../views/AccSettings.vue';
 
 Vue.use(VueRouter);
 
+
 const routes = [
   {
     path: '/',
@@ -40,6 +41,10 @@ const routes = [
     meta: {
       requiresAuth: true,
     },
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('role') !== 'SuperAdmin') next({ path: '/' });
+      else next();
+    },
   },
   {
     path: '/AddVenue',
@@ -47,6 +52,10 @@ const routes = [
     component: AddVenue,
     meta: {
       requiresAuth: true,
+    },
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('role') !== 'SuperAdmin') next({ path: '/' });
+      else next();
     },
   },
   {
@@ -56,6 +65,10 @@ const routes = [
     meta: {
       requiresAuth: true,
     },
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('role') !== 'SuperAdmin') next({ path: '/' });
+      else next();
+    },
   },
   {
     path: '/AddField/:id',
@@ -63,6 +76,10 @@ const routes = [
     component: AddField,
     meta: {
       requiresAuth: true,
+    },
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('role') !== 'SuperAdmin') next({ path: '/' });
+      else next();
     },
   },
   {
@@ -72,6 +89,10 @@ const routes = [
     meta: {
       requiresAuth: true,
     },
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('role') !== 'SuperAdmin') next({ path: '/' });
+      else next();
+    },
   },
   {
     path: '/AdminAccounts',
@@ -79,6 +100,10 @@ const routes = [
     component: AdminAccounts,
     meta: {
       requiresAuth: true,
+    },
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('role') !== 'SuperAdmin') next({ path: '/' });
+      else next();
     },
   },
   {
@@ -88,6 +113,10 @@ const routes = [
     meta: {
       requiresAuth: true,
     },
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('role') !== 'SuperAdmin') next({ path: '/' });
+      else next();
+    },
   },
   {
     path: '/EditAdmin/:id',
@@ -96,6 +125,10 @@ const routes = [
     meta: {
       requiresAuth: true,
     },
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('role') !== 'SuperAdmin') next({ path: '/' });
+      else next();
+    },
   },
   {
     path: '/Announcement',
@@ -103,6 +136,10 @@ const routes = [
     component: Announcement,
     meta: {
       requiresAuth: true,
+    },
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('role') !== 'SuperAdmin') next({ path: '/' });
+      else next();
     },
   },
   {
@@ -120,6 +157,10 @@ const routes = [
     meta: {
       requiresAuth: true,
     },
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('role') !== 'SuperAdmin') next({ path: '/' });
+      else next();
+    },
   },
   {
     path: '/EditPromo/:id',
@@ -128,6 +169,10 @@ const routes = [
     meta: {
       requiresAuth: true,
     },
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('role') !== 'SuperAdmin') next({ path: '/' });
+      else next();
+    },
   },
   {
     path: '/EditTimingDiscount',
@@ -135,6 +180,10 @@ const routes = [
     component: TimingDiscount,
     meta: {
       requiresAuth: true,
+    },
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('role') !== 'SuperAdmin') next({ path: '/' });
+      else next();
     },
   },
   {
@@ -169,9 +218,10 @@ const router = new VueRouter({
   routes,
 });
 
+
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (localStorage.getItem('user-token') == null) {
+    if (localStorage.getItem('token') == null) {
       next({
         path: '/',
         params: { nextUrl: to.fullPath },
@@ -184,11 +234,18 @@ router.beforeEach((to, from, next) => {
   }
 
   if (to.matched.some(record => record.meta.isSignedIn)) {
-    if (localStorage.getItem('user-token') != null) {
-      next({
-        path: '/Venue',
-        params: { nextUrl: to.fullPath },
-      });
+    if (localStorage.getItem('token') != null) {
+      if (localStorage.getItem('role') !== 'SuperAdmin') {
+        next({
+          path: '/PromoCode',
+          params: { nextUrl: to.fullPath },
+        });
+      } else {
+        next({
+          path: '/Venue',
+          params: { nextUrl: to.fullPath },
+        });
+      }
     } else {
       next();
     }

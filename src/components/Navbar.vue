@@ -52,12 +52,21 @@
 </template>
 
 <script>
+
 export default {
   name: 'Navbar',
   data: () => ({
     drawer: null,
-    isAdminAutho: true,
+    isAdminAutho: false,
   }),
+  mounted() {
+    const role = localStorage.getItem('role');
+    if (role === 'Admin') {
+      this.isAdminAutho = false;
+    } else {
+      this.isAdminAutho = true;
+    }
+  },
   methods: {
     logout() {
       this.$store.dispatch('logout').then(() => {
@@ -66,6 +75,7 @@ export default {
     },
   },
 };
+
 </script>
 
 <style></style>
