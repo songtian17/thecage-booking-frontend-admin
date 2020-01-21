@@ -17,7 +17,9 @@
         ></v-text-field>
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
-        <v-btn v-if="isAdminAutho" color="primary" dark to="/AddPromo">Add Promo Code</v-btn>
+        <v-btn v-if="isAdminAutho" color="primary" dark to="/AddPromo" class="addpromobtn"
+          >Add Promo Code</v-btn
+        >
       </v-card-title>
 
       <v-data-table :headers="headers" :items="promoCodes" :search="search">
@@ -156,3 +158,12 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+@media (max-width: 437px){
+  .addpromobtn{
+    margin-top: 20px;
+}
+}
+
+</style>
