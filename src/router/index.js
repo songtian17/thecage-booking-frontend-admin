@@ -15,6 +15,10 @@ import EditAdmin from '../views/EditAdmin.vue';
 import Announcement from '../views/Announcement.vue';
 import TimingDiscount from '../views/EditTimingDiscount.vue';
 
+import Products from '../views/Products.vue';
+import AddProduct from '../views/AddProduct.vue';
+import EditProduct from '../views/EditProduct.vue';
+
 import PromoCode from '../views/PromoCode.vue';
 import AddPromo from '../views/AddPromo.vue';
 import EditPromo from '../views/EditPromo.vue';
@@ -178,6 +182,42 @@ const routes = [
     path: '/EditTimingDiscount',
     name: 'EditTimingDiscount',
     component: TimingDiscount,
+    meta: {
+      requiresAuth: true,
+    },
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('role') !== 'SuperAdmin') next({ path: '/' });
+      else next();
+    },
+  },
+  {
+    path: '/Products',
+    name: 'Products',
+    component: Products,
+    meta: {
+      requiresAuth: true,
+    },
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('role') !== 'SuperAdmin') next({ path: '/' });
+      else next();
+    },
+  },
+  {
+    path: '/AddProduct',
+    name: 'AddProduct',
+    component: AddProduct,
+    meta: {
+      requiresAuth: true,
+    },
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('role') !== 'SuperAdmin') next({ path: '/' });
+      else next();
+    },
+  },
+  {
+    path: '/EditProduct/:id',
+    name: 'EditProduct',
+    component: EditProduct,
     meta: {
       requiresAuth: true,
     },

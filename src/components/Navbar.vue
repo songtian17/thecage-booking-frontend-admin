@@ -27,6 +27,11 @@
             <v-list-item-title>Timing Discounts</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item v-if="isAdminAutho" link to="/Products">
+          <v-list-item-content>
+            <v-list-item-title>Products</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-list-item v-if="isAdminAutho" link to="/AdminAccounts">
           <v-list-item-content>
             <v-list-item-title>Admin Accounts</v-list-item-title>
@@ -45,14 +50,13 @@
       <div class="my-2">
         <router-link to="/AccountSettings">
           <v-btn text><v-icon>mdi-settings</v-icon></v-btn>
-          </router-link>
+        </router-link>
       </div>
     </v-app-bar>
   </div>
 </template>
 
 <script>
-
 export default {
   name: 'Navbar',
   data: () => ({
@@ -75,7 +79,6 @@ export default {
     },
   },
 };
-
 </script>
 
 <style></style>
