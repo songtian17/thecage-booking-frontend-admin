@@ -17,13 +17,13 @@
         ></v-text-field>
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
-        <v-btn v-if="isAdminAutho" color="primary" dark to="/AddProduct" class="addproductbtn"
+        <v-btn color="primary" dark to="/AddProduct" class="addproductbtn"
           >Add Product</v-btn
         >
       </v-card-title>
 
       <v-data-table :headers="headers" :items="products" :search="search">
-        <template v-if="isAdminAutho" v-slot:item.action="{ item }">
+        <template v-slot:item.action="{ item }">
           <router-link :to="`../EditProduct/${item.id}`">
             <v-icon small class="mr-2">mdi-pencil-outline</v-icon>
           </router-link>
@@ -52,7 +52,6 @@ import Confirm from '../components/ConfirmationModal.vue';
 export default {
   data() {
     return {
-      isAdminAutho: false,
       showConfirmationDialog: false,
       deleteProductId: '',
       search: '',
@@ -95,13 +94,6 @@ export default {
         this.errMsg = err;
         this.showErrorDialog = true;
       });
-
-    const role = localStorage.getItem('role');
-    if (role === 'Admin') {
-      this.isAdminAutho = false;
-    } else {
-      this.isAdminAutho = true;
-    }
   },
   methods: {
     deleteProduct() {
