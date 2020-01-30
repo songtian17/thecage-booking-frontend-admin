@@ -77,6 +77,16 @@
         </v-menu>
         <v-text-field v-model="odooId" :rules="odooIdRules" label="Odoo Id" required>
         </v-text-field>
+        <v-select
+          v-model="selectedValidDays"
+          :items="validDays"
+          label="Valid Day of Week"
+          :rules="validDaysRules"
+          multiple
+          persistent-hint
+          chips
+          required
+        ></v-select>
         <v-btn class="mr-4" color="primary" @click="submit">save changes</v-btn>
       </v-container>
     </v-form>
@@ -105,6 +115,10 @@ export default {
       odooIdRules: [v => !!v || 'Odoo Id is required'],
       showErrorDialog: false,
       errMsg: '',
+      validDays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      selectedValidDays: '',
+      validDaysRules: [v => !!v || 'Valid Day is required',
+        v => v.length !== 0 || 'Valid Day is required'],
     };
   },
   methods: {
@@ -117,6 +131,7 @@ export default {
             odooId: this.odooId,
             startTime: this.startTime,
             endTime: this.endTime,
+            validDay: this.selectedValidDays,
           };
           this.$axios
             .post(`${process.env.VUE_APP_BACKEND}product`, data)

@@ -62,11 +62,11 @@ export default {
           sortable: true,
           value: 'name',
         },
-        { text: 'ID', value: 'id' },
         { text: 'Start Time', value: 'start_time' },
         { text: 'End Time', value: 'end_time' },
         { text: 'Odoo ID', value: 'odoo_id' },
         { text: 'Price', value: 'price' },
+        { text: 'Price', value: 'product_valid_day' },
         {
           text: 'Action',
           value: 'action',
@@ -87,8 +87,10 @@ export default {
     this.$axios
       .get(`${process.env.VUE_APP_BACKEND}products`)
       .then((res) => {
+        console.log(res.data);
         this.formatDateTime(res.data);
         this.products = res.data;
+        this.getDayNameFromArray();
       })
       .catch((err) => {
         this.errMsg = err;
@@ -110,6 +112,14 @@ export default {
     getProductId(item) {
       this.deleteProductId = item.id;
       this.showConfirmationDialog = true;
+    },
+    getDayNameFromArray() {
+      const outObj = this.products;
+      for (let i = 0; i < outObj.length; i += 1) {
+        const productsArr = outObj[i].product_valid_day;
+        outObj[i].product_valid_day = productsArr.map(item => `${item.day_of_week}`).join(', ');
+      }
+      return outObj;
     },
     formatDateTime(obj) {
       const outObj = obj;

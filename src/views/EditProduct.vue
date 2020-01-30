@@ -77,6 +77,16 @@
         </v-menu>
         <v-text-field v-model="odooId" :rules="odooIdRules" label="Odoo Id" required>
         </v-text-field>
+        <v-select
+          v-model="selectedValidDays"
+          :items="validDays"
+          label="Valid Day of Week"
+          :rules="validDaysRules"
+          multiple
+          persistent-hint
+          chips
+          required
+        ></v-select>
         <v-btn class="mr-4" color="primary" @click="submit">save changes</v-btn>
       </v-container>
     </v-form>
@@ -106,6 +116,12 @@ export default {
       odooIdRules: [v => !!v || 'Odoo Id is required'],
       showErrorDialog: false,
       errMsg: '',
+      validDays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      selectedValidDays: '',
+      validDaysRules: [
+        v => !!v || 'Valid Day is required',
+        v => v.length !== 0 || 'Valid Day is required',
+      ],
     };
   },
   mounted() {
@@ -117,6 +133,8 @@ export default {
         this.startTime = res.data.start_time.substring(0, 5);
         this.endTime = res.data.end_time.substring(0, 5);
         this.odooId = res.data.odoo_id;
+        this.selectedValidDays = res.data.product_valid_day;
+        this.getDayNameFromArray();
       })
       .catch((err) => {
         this.errMsg = err;
@@ -133,6 +151,7 @@ export default {
             odooId: this.odooId,
             startTime: this.startTime,
             endTime: this.endTime,
+            validDay: this.selectedValidDays,
           };
           this.$axios
             .put(`${process.env.VUE_APP_BACKEND}product/${this.id}`, data)
@@ -155,6 +174,13 @@ export default {
       } else {
         return true;
       }
+    },
+    getDayNameFromArray() {
+      const outObj = this.selectedValidDays;
+      for (let i = 0; i < outObj.length; i += 1) {
+        outObj[i] = outObj[i].day_of_week;
+      }
+      return outObj;
     },
   },
   components: {
