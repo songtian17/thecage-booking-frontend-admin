@@ -105,7 +105,7 @@ export default {
         if (this.venueName !== '') {
           const data = { name: this.venueName };
           this.$axios
-            .put(`${process.env.VUE_APP_BACKEND}venue/${this.venueId}`, data)
+            .put(`/venue/${this.venueId}`, data)
             .then(() => {
               this.$router.go();
             })
@@ -118,7 +118,7 @@ export default {
     },
     deleteField() {
       this.$axios
-        .delete(`${process.env.VUE_APP_BACKEND}field/${this.deleteFieldId}`)
+        .delete(`/field/${this.deleteFieldId}`)
         .then(() => {
           this.$router.go();
         })
@@ -134,7 +134,7 @@ export default {
   },
   mounted() {
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}venue/${this.venueId}`)
+      .get(`/venue/${this.venueId}`)
       .then((res) => {
         this.venueName = res.data.name;
         this.fields = res.data.fields;
@@ -144,7 +144,7 @@ export default {
         this.showErrorDialog = true;
       });
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}venues/${this.venueId}`)
+      .get(`/venues/${this.venueId}`)
       .then((res) => {
         this.fields = res.data;
       })

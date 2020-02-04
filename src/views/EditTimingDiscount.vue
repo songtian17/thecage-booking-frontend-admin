@@ -111,7 +111,7 @@ export default {
   },
   mounted() {
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}discount/1`)
+      .get('/discount/1')
       .then((res) => {
         this.startTime = res.data.start_time.substring(0, 5);
         this.endTime = res.data.end_time.substring(0, 5);
@@ -137,7 +137,7 @@ export default {
             status: this.isActive,
           };
           this.$axios
-            .put(`${process.env.VUE_APP_BACKEND}discount/1`, data)
+            .put('/discount/1', data)
             .then(() => {
               this.$router.go();
             })

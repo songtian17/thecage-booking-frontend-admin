@@ -19,7 +19,7 @@ const actions = {
   login: ({ commit }, credentials) => new Promise((resolve, reject) => {
     commit('authRequest');
     axios
-      .post(`${process.env.VUE_APP_BACKEND}signin`, credentials)
+      .post('/signin', credentials)
       .then((resp) => {
         const {
           userId, user, token, role,

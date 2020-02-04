@@ -126,7 +126,7 @@ export default {
   },
   mounted() {
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}product/${this.id}`)
+      .get(`/product/${this.id}`)
       .then((res) => {
         this.name = res.data.name;
         this.price = res.data.price;
@@ -154,7 +154,7 @@ export default {
             validDay: this.selectedValidDays,
           };
           this.$axios
-            .put(`${process.env.VUE_APP_BACKEND}product/${this.id}`, data)
+            .put(`/product/${this.id}`, data)
             .then(() => {
               this.$router.go();
             })

@@ -85,9 +85,8 @@ export default {
   },
   mounted() {
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}products`)
+      .get('/products')
       .then((res) => {
-        console.log(res.data);
         this.formatDateTime(res.data);
         this.products = res.data;
         this.getDayNameFromArray();
@@ -100,7 +99,7 @@ export default {
   methods: {
     deleteProduct() {
       this.$axios
-        .delete(`${process.env.VUE_APP_BACKEND}product/${this.deleteProductId}`)
+        .delete(`/product/${this.deleteProductId}`)
         .then(() => {
           this.$router.go();
         })

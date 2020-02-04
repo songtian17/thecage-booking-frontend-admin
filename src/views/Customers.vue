@@ -68,7 +68,7 @@ export default {
   },
   mounted() {
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}customer`)
+      .get('/customer')
       .then((res) => {
         this.customers = res.data;
       })

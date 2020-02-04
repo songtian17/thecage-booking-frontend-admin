@@ -93,7 +93,7 @@ export default {
   },
   mounted() {
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}promotioncodes`)
+      .get('/promotioncodes')
       .then((res) => {
         this.formatDateTime(res.data);
         this.promoCodes = res.data;
@@ -115,7 +115,7 @@ export default {
   methods: {
     deletePromo() {
       this.$axios
-        .delete(`${process.env.VUE_APP_BACKEND}promotioncode/${this.deletePromoId}`)
+        .delete(`/promotioncode/${this.deletePromoId}`)
         .then(() => {
           this.$router.go();
         })

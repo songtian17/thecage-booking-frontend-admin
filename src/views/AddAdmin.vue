@@ -49,7 +49,7 @@ export default {
             password: this.password,
           };
           this.$axios
-            .post(`${process.env.VUE_APP_BACKEND}admin`, data)
+            .post('/admin', data)
             .then(() => {
               this.$router.go(-1);
             })

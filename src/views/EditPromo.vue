@@ -387,7 +387,7 @@ export default {
   },
   mounted() {
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}promotioncode/${this.promoId}`)
+      .get(`/promotioncode/${this.promoId}`)
       .then((res) => {
         this.promoName = res.data.code;
         this.startDate = res.data.valid_from.substring(0, 10);
@@ -404,7 +404,7 @@ export default {
         this.showErrorDialog = true;
       });
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}validtimings/${this.promoId}`)
+      .get(`/validtimings/${this.promoId}`)
       .then((res) => {
         this.selectedValidDays = res.data;
       })
@@ -413,7 +413,7 @@ export default {
         this.showErrorDialog = true;
       });
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}products`)
+      .get('/products')
       .then((res) => {
         this.validProducts = this.getNameFromArray(res.data);
       })
@@ -422,7 +422,7 @@ export default {
         this.showErrorDialog = true;
       });
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}venues`)
+      .get('/venues')
       .then((res) => {
         this.validVenues = this.getNameFromArray(res.data);
       })
@@ -458,7 +458,7 @@ export default {
             validTiming: this.selectedValidDays,
           };
           this.$axios
-            .put(`${process.env.VUE_APP_BACKEND}promotioncode/${this.promoId}`, data)
+            .put(`/promotioncode/${this.promoId}`, data)
             .then(() => {
               this.$router.go();
             })

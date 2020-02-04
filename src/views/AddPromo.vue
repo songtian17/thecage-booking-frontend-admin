@@ -383,7 +383,7 @@ export default {
   },
   mounted() {
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}products`)
+      .get('/products')
       .then((res) => {
         this.validProducts = this.getNameFromArray(res.data);
       })
@@ -392,7 +392,7 @@ export default {
         this.showErrorDialog = true;
       });
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}venues`)
+      .get('/venues')
       .then((res) => {
         this.validVenues = this.getNameFromArray(res.data);
       })
@@ -428,7 +428,7 @@ export default {
             validTiming: this.selectedValidDays,
           };
           this.$axios
-            .post(`${process.env.VUE_APP_BACKEND}promotioncode`, data)
+            .post('/promotioncode', data)
             .then(() => {
               this.$router.go(-1);
             })

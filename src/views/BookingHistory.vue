@@ -75,7 +75,7 @@ export default {
   },
   mounted() {
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}customer/${this.custId}`)
+      .get(`/customer/${this.custId}`)
       .then((res) => {
         this.email = res.data.email;
         this.name = res.data.name;
@@ -86,7 +86,7 @@ export default {
         this.showErrorDialog = true;
       });
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}bookinghistory/${this.custId}`)
+      .get(`/bookinghistory/${this.custId}`)
       .then((res) => {
         this.history = res.data;
       })

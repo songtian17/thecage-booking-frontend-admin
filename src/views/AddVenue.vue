@@ -45,7 +45,7 @@ export default {
         if (this.venueName !== '') {
           const data = { name: this.venueName };
           this.$axios
-            .post(`${process.env.VUE_APP_BACKEND}venue`, data)
+            .post('/venue', data)
             .then(() => {
               this.$router.go(-1);
             })

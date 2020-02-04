@@ -67,7 +67,7 @@ export default {
             oldPassword: this.oldPassword,
           };
           this.$axios
-            .put(`${process.env.VUE_APP_BACKEND}accountsettings`, data)
+            .put('/accountsettings', data)
             .then(() => {
               this.$router.go();
             })

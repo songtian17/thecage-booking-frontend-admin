@@ -128,7 +128,7 @@ export default {
         placement: 'Top',
       };
       this.$axios
-        .put(`${process.env.VUE_APP_BACKEND}announcement/1`, topData)
+        .put('/announcement/1', topData)
         .then(() => {
           this.$router.go();
         })
@@ -143,7 +143,7 @@ export default {
         placement: 'Bottom',
       };
       this.$axios
-        .put(`${process.env.VUE_APP_BACKEND}announcement/2`, botData)
+        .put('/announcement/2', botData)
         .then(() => {
           this.$router.go();
         })
@@ -155,7 +155,7 @@ export default {
   },
   mounted() {
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}announcement/1`)
+      .get('/announcement/1')
       .then((res) => {
         this.topText = res.data.markdown_string;
         this.isTopVisible = res.data.visibility;
@@ -166,7 +166,7 @@ export default {
         this.showErrorDialog = true;
       });
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}announcement/2`)
+      .get('/announcement/2')
       .then((res) => {
         this.botText = res.data.markdown_string;
         this.isBotVisible = res.data.visibility;

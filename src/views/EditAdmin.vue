@@ -47,7 +47,7 @@ export default {
         if (this.adminId !== '' && this.password !== '') {
           const data = { userId: this.adminId, password: this.password };
           this.$axios
-            .put(`${process.env.VUE_APP_BACKEND}admin/${this.id}`, data)
+            .put(`/admin/${this.id}`, data)
             .then(() => {
               this.$router.go();
             })
@@ -64,7 +64,7 @@ export default {
   },
   mounted() {
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}admin/${this.id}`)
+      .get(`/admin/${this.id}`)
       .then((res) => {
         this.adminId = res.data.user_id;
       })

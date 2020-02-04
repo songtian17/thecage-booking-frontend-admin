@@ -134,7 +134,7 @@ export default {
             validDay: this.selectedValidDays,
           };
           this.$axios
-            .post(`${process.env.VUE_APP_BACKEND}product`, data)
+            .post('/product', data)
             .then(() => {
               this.$router.go();
             })

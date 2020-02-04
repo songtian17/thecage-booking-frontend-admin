@@ -335,7 +335,7 @@ export default {
 
   mounted() {
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}field/${this.fieldId}`)
+      .get(`/field/${this.fieldId}`)
       .then((res) => {
         this.fieldName = res.data.name;
         this.odooId = res.data.odoo_id;
@@ -349,7 +349,7 @@ export default {
         this.showErrorDialog = true;
       });
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}customtimeslots/${this.fieldId}`)
+      .get(`/customtimeslots/${this.fieldId}`)
       .then((res) => {
         this.removeSecFromTime(res.data);
         this.timeslots = res.data;
@@ -373,7 +373,7 @@ export default {
             fieldType: this.selectedFieldType,
           };
           this.$axios
-            .put(`${process.env.VUE_APP_BACKEND}field/${this.fieldId}`, data)
+            .put(`/field/${this.fieldId}`, data)
             .then(() => {
               this.$router.go();
             })
@@ -397,7 +397,7 @@ export default {
       if (this.editPitchName !== '') {
         const data = { name: this.editPitchName, odooId: this.editPitchOdooId };
         this.$axios
-          .put(`${process.env.VUE_APP_BACKEND}pitch/${this.editPitchId}`, data)
+          .put(`/pitch/${this.editPitchId}`, data)
           .then(() => {
             this.addPitchDialog = false;
             this.$router.go();
@@ -415,7 +415,7 @@ export default {
       if (this.newPitchName !== '') {
         const data = { name: this.newPitchName, odooId: this.newPitchOdooId };
         this.$axios
-          .post(`${process.env.VUE_APP_BACKEND}pitch/${this.fieldId}`, data)
+          .post(`/pitch/${this.fieldId}`, data)
           .then(() => {
             this.addPitchDialog = false;
             this.$router.go();
@@ -432,7 +432,7 @@ export default {
     },
     deletePitch() {
       this.$axios
-        .delete(`${process.env.VUE_APP_BACKEND}pitch/${this.deletePitchId}`)
+        .delete(`/pitch/${this.deletePitchId}`)
         .then(() => {
           this.$router.go();
         })
@@ -452,7 +452,7 @@ export default {
           endTime: this.endTime,
         };
         this.$axios
-          .post(`${process.env.VUE_APP_BACKEND}customtimeslot/${this.fieldId}`, data)
+          .post(`/customtimeslot/${this.fieldId}`, data)
           .then(() => {
             this.addTimeslotDialog = false;
             this.$router.go();
@@ -469,7 +469,7 @@ export default {
     },
     deleteTimeSlot() {
       this.$axios
-        .delete(`${process.env.VUE_APP_BACKEND}customtimeslot/${this.deleteTimeslotId}`)
+        .delete(`/customtimeslot/${this.deleteTimeslotId}`)
         .then(() => {
           this.$router.go();
         })

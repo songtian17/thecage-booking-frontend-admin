@@ -76,7 +76,7 @@ export default {
 
   mounted() {
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}admin`)
+      .get('/admin')
       .then((res) => {
         this.venues = res.data;
       })
@@ -89,7 +89,7 @@ export default {
   methods: {
     deleteAdmin() {
       this.$axios
-        .delete(`${process.env.VUE_APP_BACKEND}admin/${this.deleteAdminId}`)
+        .delete(`/admin/${this.deleteAdminId}`)
         .then(() => {
           this.$router.go('/AdminAccounts');
         })

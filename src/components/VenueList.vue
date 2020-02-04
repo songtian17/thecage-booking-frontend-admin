@@ -104,7 +104,7 @@ export default {
 
   mounted() {
     this.$axios
-      .get(`${process.env.VUE_APP_BACKEND}venues`)
+      .get('/venues')
       .then((res) => {
         this.venues = res.data;
       })
@@ -117,7 +117,7 @@ export default {
   methods: {
     deleteVenue() {
       this.$axios
-        .delete(`${process.env.VUE_APP_BACKEND}venue/${this.deleteVenueId}`)
+        .delete(`/venue/${this.deleteVenueId}`)
         .then(() => {
           this.$router.go('/venue');
         })
@@ -132,7 +132,7 @@ export default {
     },
     deleteField() {
       this.$axios
-        .delete(`${process.env.VUE_APP_BACKEND}field/${this.deleteFieldId}`)
+        .delete(`/field/${this.deleteFieldId}`)
         .then(() => {
           this.$router.go('/venue');
         })

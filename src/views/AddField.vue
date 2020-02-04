@@ -115,7 +115,7 @@ export default {
             fieldType: this.selectedFieldType,
           };
           this.$axios
-            .post(`${process.env.VUE_APP_BACKEND}field/${this.venueId}`, data)
+            .post(`/field/${this.venueId}`, data)
             .then(() => {
               this.showNotiDialog = true;
             })
