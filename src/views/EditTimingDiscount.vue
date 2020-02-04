@@ -4,7 +4,7 @@
       <v-btn icon to="/">
         <v-icon small class="mr-2" style="margin-right:0!important">mdi-chevron-left</v-icon>
       </v-btn>
-      <span class="text">Edit Timing Discounts</span>
+      <span class="text">Edit Timing Discount</span>
     </div>
 
     <v-form ref="form" v-model="isFormValid" lazy-validation>
