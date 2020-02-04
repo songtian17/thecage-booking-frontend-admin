@@ -24,7 +24,7 @@
         </v-list-item>
         <v-list-item v-if="isAdminAutho" link to="/EditTimingDiscount">
           <v-list-item-content>
-            <v-list-item-title>Timing Discounts</v-list-item-title>
+            <v-list-item-title>Timing Discount</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item v-if="isAdminAutho" link to="/Products">
