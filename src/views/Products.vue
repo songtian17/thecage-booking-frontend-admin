@@ -66,7 +66,7 @@ export default {
         { text: 'End Time', value: 'end_time' },
         { text: 'Odoo ID', value: 'odoo_id' },
         { text: 'Price', value: 'price' },
-        { text: 'Price', value: 'product_valid_day' },
+        { text: 'Valid Day', value: 'product_valid_day' },
         {
           text: 'Action',
           value: 'action',

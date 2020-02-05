@@ -136,7 +136,7 @@ export default {
           this.$axios
             .post('/product', data)
             .then(() => {
-              this.$router.go();
+              this.$router.go(-1);
             })
             .catch((err) => {
               this.errMsg = err.response.data.message;
