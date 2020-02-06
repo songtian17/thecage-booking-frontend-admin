@@ -30,7 +30,7 @@
               <p>{{ detail.field_name }}</p>
               <p>{{ detail.pitch_id }}</p>
               <p>
-                {{ formatDateTime(detail.start_time) }} - <br />
+                {{ formatDateTime(detail.start_time) }} -
                 {{ formatDateTime(detail.end_time) }}
               </p>
             </div>

@@ -11,7 +11,8 @@
       <v-container class="form-right">
         <v-text-field v-model="fieldName" :rules="nameRules" label="Field Name" required>
         </v-text-field>
-        <v-text-field v-model="odooId" label="Odoo Id" @keypress="isNumber($event)"> </v-text-field>
+        <v-text-field v-model="odooId" label="Odoo Id" disabled @keypress="isNumber($event)">
+        </v-text-field>
         <v-text-field v-model="numOfPitches" label="Number of Pitches" required disabled>
         </v-text-field>
         <v-select
